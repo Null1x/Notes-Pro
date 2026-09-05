@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0f14">
+<meta name="color-scheme" content="dark light">
+<title>Notes Pro</title>
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop stop-color="%23ffd166"/%3E%3Cstop offset=".5" stop-color="%23ff8a4c"/%3E%3Cstop offset="1" stop-color="%23ff5c8a"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x="4" y="4" width="56" height="56" rx="16" fill="url(%23g)"/%3E%3Cpath d="M18 20h28M18 30h20M18 40h14" stroke="white" stroke-width="4" stroke-linecap="round"/%3E%3Cpath d="M43 36l7 7-9 9-7 2 2-7z" fill="white" opacity=".95"/%3E%3C/svg%3E'>
+<style>
+:root{
+  --bg:#0c0f14;--panel:#121721;--panel2:#181e2a;--panel3:#222b3a;--text:#f4f7fb;--muted:#98a4b5;
+  --accent:#ffb84d;--accent2:#ffd77f;--danger:#ff607d;--success:#4bd7a4;--info:#69b7ff;
+  --border:rgba(255,255,255,.085);--border2:rgba(255,255,255,.13);--accent-rgb:255,184,77;
+  --shadow:0 24px 80px rgba(0,0,0,.38);--editor-width:960px;--radius:18px;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);color:var(--text);overflow:hidden;transition:background .28s ease,color .28s ease;
+}
+button,input,select,textarea{font:inherit}button{border:0}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body::before{content:"";position:fixed;inset:-25%;pointer-events:none;z-index:-1;background:
+  radial-gradient(circle at 18% 12%,rgba(var(--accent-rgb),.12),transparent 26%),
+  radial-gradient(circle at 80% 78%,rgba(var(--accent-rgb),.06),transparent 28%);
+  animation:ambient 20s ease-in-out infinite alternate}
+@keyframes ambient{from{transform:scale(1) translate3d(-1%,-1%,0)}to{transform:scale(1.06) translate3d(1%,1%,0)}}
+@keyframes enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:translateY(8px) scale(.97)}100%{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+@keyframes pulse{50%{opacity:.52}}
+.app{width:100%;height:100dvh;display:grid;grid-template-columns:304px minmax(0,1fr);min-height:0}
+.sidebar{min-width:0;min-height:0;display:flex;flex-direction:column;background:color-mix(in srgb,var(--panel) 94%,transparent);border-right:1px solid var(--border);z-index:30;animation:enter .3s ease}
+.brand{height:76px;padding:16px 17px;display:flex;gap:11px;align-items:center;flex:0 0 auto;position:relative;overflow:hidden}
+.brand::after{content:"";position:absolute;width:130px;height:130px;right:-55px;top:-68px;border-radius:50%;background:radial-gradient(circle,rgba(var(--accent-rgb),.18),transparent 70%);pointer-events:none}
+.logo{width:43px;height:43px;border-radius:14px;position:relative;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 12px 34px rgba(255,132,82,.23);transition:transform .25s ease,filter .25s ease;overflow:hidden}
+.logo:hover{transform:rotate(-3deg) scale(1.05);filter:saturate(1.08)}
+.logo::before{content:"";position:absolute;left:10px;top:11px;width:23px;height:3px;background:var(--bg);border-radius:999px;box-shadow:0 8px 0 var(--bg),0 16px 0 var(--bg)}
+.logo::after{content:"";position:absolute;width:8px;height:8px;border-radius:3px;background:#fff;right:6px;bottom:7px;transform:rotate(45deg)}
+.brand h1{font-size:18px;line-height:1.15;margin:0;letter-spacing:-.03em}.brand p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.sidebar-tools{padding:0 13px 13px;flex:0 0 auto}.search{position:relative}.search input{width:100%;height:42px;border-radius:12px;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:0 45px 0 38px;outline:0;transition:.18s}.search input::placeholder{color:var(--muted)}.search input:focus{border-color:rgba(var(--accent-rgb),.55);box-shadow:0 0 0 4px rgba(var(--accent-rgb),.09)}.search .magnify{position:absolute;left:13px;top:9px;font-size:19px;color:var(--muted)}.search kbd{position:absolute;right:8px;top:7px;padding:4px 6px;border-radius:7px;background:var(--panel3);border:1px solid var(--border);font-size:10px;color:var(--muted)}
+.new-note{width:100%;height:43px;margin-top:9px;border-radius:12px;background:var(--accent);color:#17110a;font-weight:800;cursor:pointer;position:relative;overflow:hidden;transition:transform .16s ease,filter .16s ease,box-shadow .18s ease;box-shadow:0 10px 30px rgba(var(--accent-rgb),.16)}.new-note::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(255,255,255,.24),transparent);transform:translateX(-120%)}.new-note:hover{transform:translateY(-1px);filter:brightness(1.05)}.new-note:hover::after{animation:shimmer .6s ease}
+.note-list{min-height:0;overflow:auto;padding:4px 9px 10px;flex:1}.list-heading{padding:13px 9px 7px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;display:flex;justify-content:space-between}.note-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;text-align:left;padding:10px 10px;margin:2px 0;border-radius:12px;background:transparent;color:var(--text);cursor:pointer;transition:transform .14s ease,background .18s ease,box-shadow .18s ease}.note-item:hover{background:var(--panel2);transform:translateX(2px)}.note-item.active{background:rgba(var(--accent-rgb),.12);box-shadow:inset 0 0 0 1px rgba(var(--accent-rgb),.18)}.note-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.note-meta{min-width:0;display:flex;gap:7px;color:var(--muted);font-size:10px;margin-top:4px}.pin{color:var(--accent2)}.empty-list{padding:28px 12px;color:var(--muted);font-size:12px;text-align:center}.empty-icon{font-size:30px;opacity:.7;margin-bottom:8px}
+.sidebar-bottom{padding:10px;border-top:1px solid var(--border);display:grid;gap:6px;flex:0 0 auto}.side-btn{height:37px;border-radius:10px;padding:0 11px;background:transparent;color:var(--muted);text-align:left;cursor:pointer;transition:.17s}.side-btn:hover{color:var(--text);background:var(--panel2);transform:translateX(2px)}
+.main{min-width:0;min-height:0;display:flex;flex-direction:column}.topbar{height:70px;flex:0 0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:color-mix(in srgb,var(--panel) 90%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);position:relative}.topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--accent-rgb),.55),transparent);opacity:.65}.top-left{display:flex;align-items:center;gap:9px;min-width:0}.mobile-menu{display:none}.note-info{min-width:0}.note-name{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.save-state{font-size:11px;color:var(--success);margin-top:3px}.save-state.saving{color:var(--accent2);animation:pulse 1s ease-in-out infinite}.save-state.error{color:var(--danger)}.top-actions{display:flex;align-items:center;gap:6px}.icon-btn{width:38px;height:38px;border-radius:11px;background:var(--panel2);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:.16s}.icon-btn:hover{color:var(--text);background:var(--panel3);transform:translateY(-1px)}.icon-btn.active{color:var(--accent2);background:rgba(var(--accent-rgb),.12);border-color:rgba(var(--accent-rgb),.2)}
+.editor-scroll{min-height:0;overflow-y:auto;overflow-x:hidden;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-behavior:smooth}.editor{width:min(var(--editor-width),calc(100% - 32px));margin:0 auto;padding:38px 24px 110px;min-height:100%;animation:enter .35s ease}.title-input{width:100%;border:0;outline:0;background:transparent;color:var(--text);font-size:34px;font-weight:850;letter-spacing:-.045em;padding:8px 0 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;display:block;box-sizing:border-box}.title-input::placeholder{color:color-mix(in srgb,var(--text) 24%,transparent)}
+.toolbar-wrap{position:sticky;top:0;z-index:18;padding:4px 0 20px;background:linear-gradient(var(--bg) 55%,transparent)}.toolbar{display:flex;gap:3px;align-items:center;flex-wrap:wrap;padding:7px;border:1px solid var(--border);border-radius:14px;background:color-mix(in srgb,var(--panel) 93%,transparent);backdrop-filter:blur(18px);box-shadow:0 14px 34px rgba(0,0,0,.13)}.tool-group{display:flex;align-items:center;gap:3px;padding-right:5px;margin-right:3px;border-right:1px solid var(--border)}.tool-group:last-child{border-right:0}.tool{height:33px;min-width:33px;padding:0 8px;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;transition:.13s}.tool:hover{background:var(--panel2);color:var(--text);transform:translateY(-1px)}.tool.active{background:rgba(var(--accent-rgb),.14);color:var(--accent2);box-shadow:inset 0 0 0 1px rgba(var(--accent-rgb),.13)}.tool select{height:31px;background:transparent;color:var(--text);border:0;outline:0;max-width:165px;cursor:pointer}.tool.color{position:relative}.tool.color input{position:absolute;inset:0;opacity:0;cursor:pointer}.color-dot{width:15px;height:15px;border-radius:5px;display:block;border:2px solid currentColor}
+#editor{outline:0;min-height:calc(100dvh - 230px);max-width:1120px;font-size:17px;line-height:1.8;color:var(--text);caret-color:var(--accent);word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap;padding-bottom:90px}#editor::selection{background:rgba(var(--accent-rgb),.33)}#editor:empty::before{content:attr(data-placeholder);color:color-mix(in srgb,var(--text) 25%,transparent)}#editor h1,#editor h2,#editor h3{line-height:1.18;letter-spacing:-.03em;margin:1.2em 0 .45em}#editor h1{font-size:2em}#editor h2{font-size:1.5em}#editor h3{font-size:1.2em}#editor p{margin:.55em 0}#editor blockquote{position:relative;margin:1.25em 0;padding:16px 20px 16px 50px;border:1px solid rgba(var(--accent-rgb),.16);border-left:4px solid var(--accent);border-radius:0 14px 14px 0;background:linear-gradient(90deg,rgba(var(--accent-rgb),.10),rgba(var(--accent-rgb),.035));color:color-mix(in srgb,var(--text) 92%,transparent);font-size:1em;line-height:1.7;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}#editor blockquote::before{content:'“';position:absolute;left:14px;top:2px;font-size:42px;line-height:1;font-weight:800;color:var(--accent2);opacity:.9}#editor blockquote p{margin:.2em 0}#editor blockquote a{color:var(--accent2)}#editor pre{padding:15px;border-radius:12px;background:var(--panel2);border:1px solid var(--border);overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.55}#editor code{background:var(--panel2);padding:2px 6px;border-radius:6px}#editor ul,#editor ol{padding-left:28px}#editor a{color:var(--accent2);text-decoration:underline;text-underline-offset:3px}.task{list-style:none;padding-left:0}.task-row{display:flex;align-items:flex-start;gap:8px;margin:.2em 0}.task-box{margin-top:.45em;accent-color:var(--accent)}.task-text{flex:1}.editor-image{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);display:block;margin:14px 0;box-shadow:0 10px 25px rgba(0,0,0,.18)}
+.bottom{height:39px;flex:0 0 auto;border-top:1px solid var(--border);background:var(--panel);display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:var(--muted);font-size:10px}.status-items{display:flex;gap:8px}.status-pill{padding:4px 8px;border-radius:7px;background:var(--panel2);border:1px solid var(--border)}
+.floating-toolbar{position:fixed;z-index:75;display:none;gap:3px;padding:6px;background:var(--panel);border:1px solid var(--border2);box-shadow:var(--shadow);border-radius:12px;animation:pop .13s ease}.floating-toolbar.open{display:flex}.floating-toolbar .tool{width:32px;min-width:32px;height:32px}
+.fullscreen .sidebar,.fullscreen .topbar,.fullscreen .bottom{display:none}.fullscreen .app{display:block}.fullscreen .editor{max-width:1050px;padding-top:55px}.fullscreen .editor-scroll{background:var(--bg)}.focus-writing .toolbar-wrap{opacity:.92}
+.toast{position:fixed;right:19px;bottom:57px;z-index:150;max-width:min(370px,calc(100vw - 38px));padding:10px 13px;border-radius:11px;background:var(--panel3);border:1px solid var(--border);box-shadow:var(--shadow);color:var(--text);font-size:12px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:none}
+.modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.58);backdrop-filter:blur(9px);display:none;align-items:center;justify-content:center;padding:12px}.modal-backdrop.open{display:flex}.modal{width:min(820px,100%);max-height:min(790px,100%);overflow:hidden;background:var(--panel);border:1px solid var(--border2);border-radius:22px;box-shadow:var(--shadow);animation:pop .22s ease}.modal-head{height:63px;padding:0 17px 0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}.modal-head h2{font-size:18px;margin:0;letter-spacing:-.02em}.modal-body{overflow:auto;max-height:calc(100% - 63px);padding:18px 20px}.settings-layout{display:grid;grid-template-columns:165px minmax(0,1fr);gap:18px}.settings-nav{display:grid;align-content:start;gap:5px}.settings-nav button{height:39px;border-radius:10px;background:transparent;color:var(--muted);text-align:left;padding:0 10px;cursor:pointer;transition:.15s}.settings-nav button:hover{background:var(--panel2);color:var(--text);transform:translateX(2px)}.settings-nav button.active{background:rgba(var(--accent-rgb),.13);color:var(--text);box-shadow:inset 0 0 0 1px rgba(var(--accent-rgb),.14)}.settings-page{display:none;animation:enter .2s ease}.settings-page.active{display:block}.setting-card{padding:15px;border:1px solid var(--border);background:var(--panel2);border-radius:14px;margin-bottom:10px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.setting-card:hover{transform:translateY(-1px);border-color:rgba(var(--accent-rgb),.18);box-shadow:0 12px 30px rgba(0,0,0,.12)}.setting-row{min-height:54px;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:14px}.setting-row:last-child{border-bottom:0}.setting-title{font-size:13px;font-weight:750}.setting-desc{font-size:11px;line-height:1.5;color:var(--muted);margin-top:3px}.setting-row select,.text-input{min-width:150px;background:var(--panel3);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 10px;outline:0}.inline-buttons{display:flex;gap:8px;flex-wrap:wrap}.secondary-btn{height:38px;padding:0 12px;border-radius:10px;background:var(--panel3);color:var(--text);border:1px solid var(--border);cursor:pointer;transition:.15s}.secondary-btn:hover{transform:translateY(-1px);background:color-mix(in srgb,var(--panel3) 80%,var(--accent) 20%)}.danger-btn{background:rgba(255,96,125,.1);color:#ff9bad;border-color:rgba(255,96,125,.2)}.theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.theme-card{border:1px solid var(--border);background:var(--panel2);border-radius:12px;padding:9px;cursor:pointer;color:var(--text);text-align:left;transition:.18s;position:relative;overflow:hidden}.theme-card:hover{transform:translateY(-2px) scale(1.01);border-color:rgba(var(--accent-rgb),.25)}.theme-card.active{box-shadow:inset 0 0 0 2px var(--accent)}.swatches{height:38px;border-radius:8px;display:flex;overflow:hidden;margin-bottom:7px}.swatches span{flex:1}.theme-name{font-size:11px;font-weight:750}.theme-meta{font-size:9px;color:var(--muted);margin-top:2px}.about-hero{display:flex;gap:16px;align-items:center;padding:20px;border-radius:17px;background:radial-gradient(circle at 100% 0%,rgba(var(--accent-rgb),.18),transparent 42%),linear-gradient(135deg,rgba(var(--accent-rgb),.11),var(--panel2));border:1px solid var(--border);margin-bottom:12px;overflow:hidden;position:relative}.about-hero::after{content:"";position:absolute;width:180px;height:180px;right:-90px;bottom:-115px;border-radius:50%;background:rgba(var(--accent-rgb),.08);filter:blur(3px)}.about-logo{width:62px;height:62px;border-radius:18px;flex:0 0 auto;background:linear-gradient(135deg,var(--accent2),var(--accent));position:relative;box-shadow:0 14px 34px rgba(var(--accent-rgb),.20);transition:transform .22s ease,box-shadow .22s ease}.about-logo:hover{transform:rotate(-3deg) scale(1.03)}.about-logo::before{content:"";position:absolute;left:14px;top:16px;width:30px;height:4px;background:var(--bg);border-radius:99px;box-shadow:0 10px 0 var(--bg),0 20px 0 var(--bg)}.about-logo::after{content:"";position:absolute;right:8px;bottom:8px;width:9px;height:9px;background:var(--bg);border-radius:3px;transform:rotate(45deg)}.about-hero-copy{position:relative;z-index:1}.about-kicker{text-transform:uppercase;letter-spacing:.14em;font-size:9px;font-weight:800;color:var(--accent2);margin-bottom:5px}.about h3{margin:0;font-size:19px;letter-spacing:-.025em}.about p{font-size:12px;line-height:1.65;color:var(--muted)}.about-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:10px}.about-card{display:flex;gap:12px;align-items:flex-start;min-height:132px;margin-bottom:10px}.about-card-icon{width:33px;height:33px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;background:rgba(var(--accent-rgb),.13);color:var(--accent2);border:1px solid rgba(var(--accent-rgb),.14);font-weight:900}.about-value{font-size:16px;font-weight:800;color:var(--text);margin:5px 0}.support-card{background:linear-gradient(135deg,rgba(var(--accent-rgb),.10),var(--panel2))}.support-link{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 14px;margin-top:11px;border-radius:10px;background:var(--accent);color:#17110a;text-decoration:none;font-weight:850;transition:.15s;box-shadow:0 8px 20px rgba(var(--accent-rgb),.15)}.support-link:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 12px 26px rgba(var(--accent-rgb),.2)}.privacy-card{margin-bottom:8px}.privacy-line{display:flex;gap:12px;align-items:flex-start}.about-footer-note{text-align:center;color:var(--muted);font-size:10px;padding:7px 0 2px;letter-spacing:.04em}.about-footer-note span{color:var(--text)}.shortcut-table{width:100%;border-collapse:collapse}.shortcut-table td{padding:9px 2px;border-bottom:1px solid var(--border);font-size:12px}.kbd{font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 7px;border-radius:6px;background:var(--panel3);border:1px solid var(--border);white-space:nowrap}.language-note{font-size:11px;color:var(--muted);margin-top:9px}.detected{color:var(--accent2)}
+.context-menu{position:fixed;z-index:9999;display:none;min-width:190px;padding:5px;border-radius:11px;background:var(--panel);border:1px solid var(--border2);box-shadow:var(--shadow);animation:pop .12s ease}.context-menu.open{display:block}.context-menu button{width:100%;height:34px;border-radius:8px;padding:0 9px;background:transparent;color:var(--text);text-align:left;cursor:pointer;font-size:12px}.context-menu button:hover{background:var(--panel2)}.context-menu .danger{color:#ff93a6}
+.trash-list{display:grid;gap:7px}.trash-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;border:1px solid var(--border);background:var(--panel2);border-radius:11px}.trash-title{font-size:12px;font-weight:700}.trash-actions{display:flex;gap:5px}
+.no-anim *, .no-anim *::before, .no-anim *::after{animation:none!important;transition:none!important}
+@media(max-width:850px){
+  .app{display:block}.sidebar{position:fixed;inset:0 auto 0 0;width:min(340px,88vw);transform:translateX(-103%);transition:transform .23s ease;box-shadow:var(--shadow)}.sidebar.open{transform:none}.mobile-menu{display:block}.editor{width:100%;padding:24px 14px 100px}.topbar{height:62px;padding:0 12px}.toolbar-wrap{padding-bottom:16px}.title-input{font-size:27px;white-space:normal;overflow:hidden;text-overflow:clip;overflow-wrap:anywhere;line-height:1.18}.bottom{padding:0 12px}.desktop-only{display:none}.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-layout{grid-template-columns:1fr}.settings-nav{display:flex;overflow:auto}.settings-nav button{white-space:nowrap}.setting-row{align-items:flex-start;flex-direction:column}.setting-row select,.text-input{width:100%}.search kbd{display:none}
+}
+@media(max-width:500px){.editor{width:100%;padding-left:14px;padding-right:14px}.top-actions .optional{display:inline-grid}.tool select{max-width:112px}.modal-body{padding:14px}.theme-grid{grid-template-columns:1fr 1fr}.status-items{gap:4px}.status-pill:last-child{display:none}}
+@media(max-width:700px){.about-grid{grid-template-columns:1fr}.about-card{min-height:auto}.about-hero{padding:16px}.about-hero h3{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div><h1>Notes Pro</h1><p data-i18n="tagline">Пишите. Сохраняйте. Создавайте.</p></div>
+    </div>
+    <div class="sidebar-tools">
+      <div class="search"><span class="magnify">⌕</span><input id="searchInput" data-i18n-placeholder="search" placeholder="Поиск заметок…" autocomplete="off"><kbd>Ctrl K</kbd></div>
+      <button class="new-note" id="newNoteBtn"><span data-i18n="newNote">＋ Новая заметка</span></button>
+    </div>
+    <div class="note-list" id="noteList"></div>
+    <div class="sidebar-bottom">
+      <button class="side-btn" id="trashBtn">🗑 <span data-i18n="trash">Корзина</span></button>
+      <button class="side-btn" id="settingsBtn">⚙ <span data-i18n="settings">Настройки</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="icon-btn mobile-menu" id="mobileMenuBtn" title="Menu">☰</button>
+        <div class="note-info"><div class="note-name" id="noteName">Новая заметка</div><div class="save-state" id="saveState">Сохранено</div></div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="pinBtn" title="Pin">☆</button>
+        <button class="icon-btn" id="undoBtn" title="Undo">↶</button>
+        <button class="icon-btn" id="redoBtn" title="Redo">↷</button>
+        <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
+        <button class="icon-btn optional" id="moreBtn" title="More">⋯</button>
+      </div>
+    </header>
+
+    <div class="editor-scroll" id="editorScroll">
+      <section class="editor">
+        <input id="titleInput" class="title-input" data-i18n-placeholder="noteTitle" placeholder="Название заметки" spellcheck="true">
+        <div class="toolbar-wrap">
+          <div class="toolbar" id="editorToolbar" aria-label="Formatting toolbar">
+            <div class="tool-group">
+              <button class="tool" data-cmd="undo" title="Undo">↶</button><button class="tool" data-cmd="redo" title="Redo">↷</button>
+            </div>
+            <div class="tool-group"><div class="tool"><select id="blockFormat" title="Style"><option value="p" data-i18n="normal">Обычный</option><option value="h1" data-i18n="heading1">Заголовок 1</option><option value="h2" data-i18n="heading2">Заголовок 2</option><option value="h3" data-i18n="heading3">Заголовок 3</option><option value="blockquote" data-i18n="quote">Цитата</option><option value="pre" data-i18n="code">Код</option></select></div></div>
+            <div class="tool-group">
+              <button class="tool" data-cmd="bold" data-tip="bold" title="Bold"><b>B</b></button><button class="tool" data-cmd="italic" data-tip="italic" title="Italic"><i>I</i></button><button class="tool" data-cmd="underline" data-tip="underline" title="Underline"><u>U</u></button><button class="tool" data-cmd="strikeThrough" data-tip="strikethrough" title="Strikethrough"><s>S</s></button>
+              <button class="tool color" data-tip="textColor" title="Text color"><span class="color-dot" id="textColorDot"></span><input type="color" id="textColor" value="#ff5c5c"></button>
+              <button class="tool color" data-tip="highlight" title="Highlight"><span class="color-dot" id="highlightDot" style="background:#ffe066"></span><input type="color" id="highlightColor" value="#ffe066"></button>
+            </div>
+            <div class="tool-group">
+              <button class="tool" data-cmd="insertUnorderedList" data-tip="bullets" title="Bulleted list">☷</button><button class="tool" data-cmd="insertOrderedList" data-tip="numbered" title="Numbered list">1.</button><button class="tool" id="checklistBtn" data-tip="checklist" title="Checklist">☑</button>
+            </div>
+            <div class="tool-group"><button class="tool" data-cmd="justifyLeft" data-tip="alignLeft" title="Align left">≡</button><button class="tool" data-cmd="justifyCenter" data-tip="alignCenter" title="Center">≣</button><button class="tool" data-cmd="justifyRight" data-tip="alignRight" title="Align right">≡</button></div>
+            <div class="tool-group">
+              <button class="tool" id="linkBtn" data-tip="link" title="Link">↗</button><button class="tool" id="imageBtn" data-tip="image" title="Insert image">▧</button><button class="tool" id="hrBtn" data-tip="divider" title="Divider">―</button><button class="tool" id="clearFormatBtn" data-tip="clearFormatting" title="Clear formatting">Tx</button><button class="tool" id="focusModeBtn" data-tip="focusMode" title="Focus mode">◉</button>
+            </div>
+          </div>
+        </div>
+        <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Начните писать…"></div>
+      </section>
+    </div>
+
+    <footer class="bottom"><div class="status-items"><span class="status-pill" id="wordCount">0 слов</span><span class="status-pill" id="charCount">0 символов</span><span class="status-pill" id="updatedTime">только что</span></div><div class="desktop-only">Ctrl+Z · Ctrl+Y · Ctrl+K · Ctrl+S · Ctrl+N</div></footer>
+  </main>
+</div>
+
+<div class="floating-toolbar" id="floatingToolbar">
+  <button class="tool" data-cmd="bold"><b>B</b></button><button class="tool" data-cmd="italic"><i>I</i></button><button class="tool" data-cmd="underline"><u>U</u></button><button class="tool" id="floatHighlight">▰</button><button class="tool" id="floatLink">↗</button>
+</div>
+
+<div class="context-menu" id="contextMenu">
+  <button id="ctxRename">✎ Переименовать</button><button id="ctxPin">☆ Закрепить</button><button id="ctxExportTxt">⇩ Скачать TXT</button><button id="ctxExportMd">⇩ Скачать Markdown</button><button id="ctxDelete" class="danger">🗑 В корзину</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <div class="modal-head"><h2 data-i18n="settings">Настройки</h2><button class="icon-btn" id="closeSettings">×</button></div>
+    <div class="modal-body">
+      <div class="settings-layout">
+        <nav class="settings-nav" id="settingsNav">
+          <button class="active" data-page="general" data-i18n="general">Общие</button><button data-page="appearance" data-i18n="appearance">Внешний вид</button><button data-page="data" data-i18n="data">Данные</button><button data-page="shortcuts" data-i18n="shortcuts">Горячие клавиши</button><button data-page="about" data-i18n="about">О нас</button>
+        </nav>
+        <div>
+          <section class="settings-page active" id="page-general">
+            <div class="setting-card">
+              <div class="setting-row"><div><div class="setting-title" data-i18n="language">Язык интерфейса</div><div class="setting-desc" data-i18n="languageDesc">Автоматически определяется по языку браузера. Название Notes Pro не меняется.</div></div><select id="languageSelect"><option value="auto">Auto</option><option value="ru">Русский</option><option value="en">English</option><option value="de">Deutsch</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option></select></div>
+              <div class="language-note"><span data-i18n="detected">Определён язык:</span> <span class="detected" id="detectedLanguage"></span></div>
+            </div>
+            <div class="setting-card"><div class="setting-row"><div><div class="setting-title" data-i18n="localStorageTitle">Локальное хранение</div><div class="setting-desc" data-i18n="localStorageDesc">Заметки автоматически сохраняются в этом браузере практически мгновенно.</div></div><span class="status-pill">localStorage</span></div><div class="setting-row"><div><div class="setting-title" data-i18n="autosave">Автосохранение</div><div class="setting-desc" data-i18n="autosaveDesc">Сохранение запускается примерно через 160 мс после изменения.</div></div><span class="status-pill" id="storageStatus">Проверяем…</span></div></div>
+          </section>
+
+          <section class="settings-page" id="page-appearance">
+            <div class="setting-card"><div class="setting-title" data-i18n="themesTitle">Темы</div><div class="setting-desc" data-i18n="themesDesc">Разные палитры — от AMOLED и терминала до светлой бумаги.</div><div class="theme-grid" id="themeGrid" style="margin-top:11px"></div></div>
+            <div class="setting-card"><div class="setting-row"><div><div class="setting-title" data-i18n="animations">Анимации интерфейса</div><div class="setting-desc" data-i18n="animationsDesc">Плавные переходы, hover-эффекты и анимированный фон.</div></div><button class="secondary-btn" id="animationToggle">ON</button></div></div>
+          </section>
+
+          <section class="settings-page" id="page-data">
+            <div class="setting-card"><div class="setting-title" data-i18n="importExport">Импорт и экспорт</div><div class="setting-desc" data-i18n="dataDesc">TXT, Markdown и полный JSON-бэкап заметок.</div><div class="inline-buttons" style="margin-top:11px"><input type="file" id="importFile" accept=".txt,.md,.markdown,.json" hidden><button class="secondary-btn" id="importBtn" data-i18n="import">Импорт</button><button class="secondary-btn" id="backupBtn">JSON backup</button><button class="secondary-btn" id="exportCurrentTxt">TXT</button><button class="secondary-btn" id="exportCurrentMd">Markdown</button></div></div>
+            <div class="setting-card"><div class="setting-row"><div><div class="setting-title" data-i18n="deleteAll">Полностью очистить корзину</div><div class="setting-desc" data-i18n="deleteAllDesc">Удаляет только заметки, уже находящиеся в корзине.</div></div><button class="secondary-btn danger-btn" id="emptyTrashBtn" data-i18n="clearTrash">Очистить</button></div></div>
+          </section>
+
+          <section class="settings-page" id="page-shortcuts">
+            <div class="setting-card"><table class="shortcut-table"><tr><td data-i18n="undo">Отменить</td><td><span class="kbd">Ctrl + Z</span></td></tr><tr><td data-i18n="redo">Повторить</td><td><span class="kbd">Ctrl + Y</span> / <span class="kbd">Ctrl + Shift + Z</span></td></tr><tr><td data-i18n="find">Поиск</td><td><span class="kbd">Ctrl + K</span></td></tr><tr><td data-i18n="save">Сохранить</td><td><span class="kbd">Ctrl + S</span></td></tr><tr><td data-i18n="newNoteShort">Новая заметка</td><td><span class="kbd">Ctrl + N</span></td></tr><tr><td data-i18n="fullscreen">Полный экран</td><td><span class="kbd">F11</span> / <span class="kbd">Ctrl + Shift + F</span></td></tr><tr><td data-i18n="bold">Жирный</td><td><span class="kbd">Ctrl + B</span></td></tr><tr><td data-i18n="italic">Курсив</td><td><span class="kbd">Ctrl + I</span></td></tr></table></div>
+          </section>
+
+          <section class="settings-page" id="page-about">
+            <div class="about-hero">
+              <div class="about-logo"></div>
+              <div class="about-hero-copy"><div class="about-kicker">Notes Pro</div><h3>Простые заметки. Никаких отвлечений.</h3><div class="setting-desc" data-i18n="aboutSubtitle">Локальные заметки для текста без отвлечений.</div></div>
+            </div>
+            <div class="about-grid">
+              <div class="setting-card about-card">
+                <div class="about-card-icon">⌁</div>
+                <div><div class="setting-title" data-i18n="developer">Разработчик</div><div class="about-value">Nullix</div><div class="setting-desc">Notes Pro создан как быстрый локальный инструмент для текста, заметок и сценариев.</div></div>
+              </div>
+              <div class="setting-card about-card support-card">
+                <div class="about-card-icon">↗</div>
+                <div><div class="setting-title" data-i18n="support">Поддержать разработку</div><div class="setting-desc" data-i18n="supportDesc">Если Notes Pro оказался полезным, можно поддержать разработку.</div><a class="support-link" href="https://www.donationalerts.com/r/nullix" target="_blank" rel="noopener" data-i18n="supportButton">Поддержать Notes Pro</a></div>
+              </div>
+            </div>
+            <div class="setting-card privacy-card">
+              <div class="privacy-line"><div class="about-card-icon">✓</div><div><div class="setting-title" data-i18n="privacy">Приватность</div><div class="setting-desc" data-i18n="privacyDesc">В этой версии заметки не отправляются на сервер. Они находятся локально в хранилище браузера.</div></div></div>
+            </div>
+            <div class="about-footer-note">Notes Pro · Local-first · <span>Nullix</span></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+const STORAGE_KEY='notes-pro-v3';
+const DEVELOPER='Nullix';
+const SUPPORT_URL='https://www.donationalerts.com/r/nullix';
+const LANGS=['ru','en','de','uk','pl','fr','es','it','pt','tr'];
+
+const I18N={
+ru:{tagline:'Пишите. Сохраняйте. Создавайте.',newNote:'＋ Новая заметка',trash:'Корзина',settings:'Настройки',search:'Поиск заметок…',noteTitle:'Название заметки',editorPlaceholder:'Начните писать…',saved:'Сохранено',saving:'Сохранение…',saveError:'Ошибка сохранения',noNotes:'Заметок пока нет',emptyTrash:'Корзина пуста',justNow:'только что',minutes:'мин',hours:'ч',days:'д',words:'слов',characters:'символов',notes:'заметки',general:'Общие',appearance:'Внешний вид',data:'Данные',shortcuts:'Горячие клавиши',about:'О нас',language:'Язык интерфейса',languageDesc:'Автоматически определяется по языку браузера. Название Notes Pro не меняется.',detected:'Определён язык:',localStorageTitle:'Локальное хранение',localStorageDesc:'Заметки автоматически сохраняются в этом браузере практически мгновенно.',autosave:'Автосохранение',autosaveDesc:'Сохранение запускается примерно через 160 мс после изменения.',themesTitle:'Темы',themesDesc:'Разные палитры — от AMOLED и терминала до светлой бумаги.',animations:'Анимации интерфейса',animationsDesc:'Плавные переходы, hover-эффекты и анимированный фон.',importExport:'Импорт и экспорт',dataDesc:'TXT, Markdown и полный JSON-бэкап заметок.',import:'Импорт',deleteAll:'Полностью очистить корзину',deleteAllDesc:'Удаляет только заметки, уже находящиеся в корзине.',clearTrash:'Очистить',undo:'Отменить',redo:'Повторить',find:'Поиск',save:'Сохранить',newNoteShort:'Новая заметка',fullscreen:'Полный экран',bold:'Жирный',italic:'Курсив',developer:'Разработчик',support:'Поддержать разработку',supportDesc:'Если Notes Pro оказался полезным, можно поддержать разработку.',supportButton:'Поддержать Notes Pro',privacy:'Приватность',privacyDesc:'В этой версии заметки не отправляются на сервер. Они находятся локально в хранилище браузера.',renamed:'Заметка переименована',movedTrash:'Заметка перемещена в корзину',restored:'Заметка восстановлена',created:'Создана новая заметка',copied:'Ссылка скопирована',backupDone:'Бэкап экспортирован',importDone:'Заметка импортирована',importBackupDone:'Бэкап импортирован',badImport:'Не удалось импортировать файл',themeChanged:'Тема применена',textSaved:'Сохранено',languageChanged:'Язык интерфейса изменён',trashCleared:'Корзина очищена',confirmDelete:'Удалить эту заметку в корзину?',confirmEmptyTrash:'Удалить все заметки из корзины навсегда?',renamePrompt:'Новое название:',linkPrompt:'URL ссылки:',moveHint:'Переместить в корзину через контекстное меню',categoryless:'Без папок',listStyle:'Список',normal:'Обычный',heading1:'Заголовок 1',heading2:'Заголовок 2',heading3:'Заголовок 3',quote:'Цитата',code:'Код',aboutSubtitle:'Локальные заметки для текста без отвлечений.',underline:'Подчёркивание',strikethrough:'Зачёркивание',bullets:'Маркированный список',numbered:'Нумерованный список',checklist:'Чек-лист',alignLeft:'По левому краю',alignCenter:'По центру',alignRight:'По правому краю',link:'Ссылка',image:'Изображение',divider:'Разделитель',clearFormatting:'Очистить форматирование',focusMode:'Режим письма',textColor:'Цвет текста',highlight:'Выделение',style:'Стиль текста'},
+en:{tagline:'Write. Save. Create.',newNote:'＋ New note',trash:'Trash',settings:'Settings',search:'Search notes…',noteTitle:'Note title',editorPlaceholder:'Start writing…',saved:'Saved',saving:'Saving…',saveError:'Save error',noNotes:'No notes yet',emptyTrash:'Trash is empty',justNow:'just now',minutes:'min',hours:'h',days:'d',words:'words',characters:'characters',notes:'notes',general:'General',appearance:'Appearance',data:'Data',shortcuts:'Shortcuts',about:'About',language:'Interface language',languageDesc:'Detected from your browser language. Notes Pro stays the same.',detected:'Detected language:',localStorageTitle:'Local storage',localStorageDesc:'Notes are saved in this browser almost instantly.',autosave:'Autosave',autosaveDesc:'Saving starts about 160 ms after a change.',themesTitle:'Themes',themesDesc:'Different palettes from AMOLED and terminal to light paper.',animations:'Interface animations',animationsDesc:'Smooth transitions, hover effects and animated background.',importExport:'Import & export',dataDesc:'TXT, Markdown and full JSON backup.',import:'Import',deleteAll:'Empty trash permanently',deleteAllDesc:'Deletes only notes already in trash.',clearTrash:'Clear',undo:'Undo',redo:'Redo',find:'Search',save:'Save',newNoteShort:'New note',fullscreen:'Fullscreen',bold:'Bold',italic:'Italic',developer:'Developer',support:'Support development',supportDesc:'If Notes Pro is useful, you can support its development.',supportButton:'Support Notes Pro',privacy:'Privacy',privacyDesc:'In this version notes are not sent to a server. They stay in your browser storage.',renamed:'Note renamed',movedTrash:'Note moved to trash',restored:'Note restored',created:'New note created',copied:'Link copied',backupDone:'Backup exported',importDone:'Note imported',importBackupDone:'Backup imported',badImport:'Could not import file',themeChanged:'Theme applied',textSaved:'Saved',languageChanged:'Interface language changed',trashCleared:'Trash cleared',confirmDelete:'Move this note to trash?',confirmEmptyTrash:'Delete all notes in trash forever?',renamePrompt:'New name:',linkPrompt:'Link URL:',moveHint:'Move via the note context menu',categoryless:'No folders',listStyle:'List',normal:'Normal',heading1:'Heading 1',heading2:'Heading 2',heading3:'Heading 3',quote:'Quote',code:'Code',aboutSubtitle:'Local-first notes for writing without distractions.',underline:'Underline',strikethrough:'Strikethrough',bullets:'Bulleted list',numbered:'Numbered list',checklist:'Checklist',alignLeft:'Align left',alignCenter:'Center',alignRight:'Align right',link:'Link',image:'Image',divider:'Divider',clearFormatting:'Clear formatting',focusMode:'Focus mode',textColor:'Text color',highlight:'Highlight',style:'Text style'},
+de:{tagline:'Schreiben. Speichern. Erstellen.',newNote:'＋ Neue Notiz',trash:'Papierkorb',settings:'Einstellungen',search:'Notizen suchen…',noteTitle:'Notiztitel',editorPlaceholder:'Schreiben beginnen…',saved:'Gespeichert',saving:'Speichern…',saveError:'Speicherfehler',noNotes:'Noch keine Notizen',emptyTrash:'Papierkorb ist leer',justNow:'gerade eben',minutes:'Min',hours:'Std',days:'T',words:'Wörter',characters:'Zeichen',notes:'Notizen',general:'Allgemein',appearance:'Darstellung',data:'Daten',shortcuts:'Tastenkürzel',about:'Über',language:'Oberflächensprache',languageDesc:'Wird anhand der Browsersprache erkannt. Notes Pro bleibt unverändert.',detected:'Erkannte Sprache:',localStorageTitle:'Lokaler Speicher',localStorageDesc:'Notizen werden fast sofort in diesem Browser gespeichert.',autosave:'Automatisches Speichern',autosaveDesc:'Speichern startet etwa 160 ms nach einer Änderung.',themesTitle:'Themes',themesDesc:'Verschiedene Paletten: AMOLED, Terminal und helles Papier.',animations:'Animationen',animationsDesc:'Weiche Übergänge, Hover-Effekte und animierter Hintergrund.',importExport:'Import & Export',dataDesc:'TXT, Markdown und vollständiges JSON-Backup.',import:'Import',deleteAll:'Papierkorb leeren',deleteAllDesc:'Löscht nur bereits gelöschte Notizen.',clearTrash:'Leeren',undo:'Rückgängig',redo:'Wiederholen',find:'Suchen',save:'Speichern',newNoteShort:'Neue Notiz',fullscreen:'Vollbild',bold:'Fett',italic:'Kursiv',developer:'Entwickler',support:'Entwicklung unterstützen',supportDesc:'Wenn Notes Pro hilfreich ist, kannst du die Entwicklung unterstützen.',supportButton:'Notes Pro unterstützen',privacy:'Datenschutz',privacyDesc:'In dieser Version werden Notizen nicht an einen Server gesendet. Sie bleiben im Browser gespeichert.',renamed:'Notiz umbenannt',movedTrash:'Notiz in Papierkorb verschoben',restored:'Notiz wiederhergestellt',created:'Neue Notiz erstellt',copied:'Link kopiert',backupDone:'Backup exportiert',importDone:'Notiz importiert',importBackupDone:'Backup importiert',badImport:'Datei konnte nicht importiert werden',themeChanged:'Theme angewendet',textSaved:'Gespeichert',languageChanged:'Sprache geändert',trashCleared:'Papierkorb geleert',confirmDelete:'Diese Notiz in den Papierkorb verschieben?',confirmEmptyTrash:'Alle Notizen im Papierkorb dauerhaft löschen?',renamePrompt:'Neuer Name:',linkPrompt:'Link-URL:',moveHint:'Über das Kontextmenü verschieben',categoryless:'Keine Ordner',listStyle:'Liste',normal:'Standard',heading1:'Überschrift 1',heading2:'Überschrift 2',heading3:'Überschrift 3',quote:'Zitat',code:'Code',aboutSubtitle:'Lokale Notizen für konzentriertes Schreiben.',underline:'Unterstrichen',strikethrough:'Durchgestrichen',bullets:'Aufzählung',numbered:'Nummerierte Liste',checklist:'Checkliste',alignLeft:'Linksbündig',alignCenter:'Zentriert',alignRight:'Rechtsbündig',link:'Link',image:'Bild',divider:'Trenner',clearFormatting:'Formatierung löschen',focusMode:'Schreibmodus',textColor:'Textfarbe',highlight:'Hervorhebung',style:'Textstil'},
+uk:{tagline:'Пишіть. Зберігайте. Створюйте.',newNote:'＋ Нова нотатка',trash:'Кошик',settings:'Налаштування',search:'Пошук нотаток…',noteTitle:'Назва нотатки',editorPlaceholder:'Почніть писати…',saved:'Збережено',saving:'Збереження…',saveError:'Помилка збереження',noNotes:'Нотаток ще немає',emptyTrash:'Кошик порожній',justNow:'щойно',minutes:'хв',hours:'год',days:'д',words:'слів',characters:'символів',notes:'нотаток',general:'Загальні',appearance:'Вигляд',data:'Дані',shortcuts:'Гарячі клавіші',about:'Про нас',language:'Мова інтерфейсу',languageDesc:'Визначається за мовою браузера. Назва Notes Pro не змінюється.',detected:'Визначена мова:',localStorageTitle:'Локальне зберігання',localStorageDesc:'Нотатки майже миттєво зберігаються в цьому браузері.',autosave:'Автозбереження',autosaveDesc:'Збереження починається приблизно через 160 мс після зміни.',themesTitle:'Теми',themesDesc:'Різні палітри — від AMOLED і терміналу до світлого паперу.',animations:'Анімації',animationsDesc:'Плавні переходи, ефекти наведення та анімований фон.',importExport:'Імпорт і експорт',dataDesc:'TXT, Markdown та повна JSON-копія.',import:'Імпорт',deleteAll:'Очистити кошик назавжди',deleteAllDesc:'Видаляє лише нотатки з кошика.',clearTrash:'Очистити',undo:'Скасувати',redo:'Повторити',find:'Пошук',save:'Зберегти',newNoteShort:'Нова нотатка',fullscreen:'Повний екран',bold:'Жирний',italic:'Курсив',developer:'Розробник',support:'Підтримати розробку',supportDesc:'Якщо Notes Pro корисний, можна підтримати його розвиток.',supportButton:'Підтримати Notes Pro',privacy:'Приватність',privacyDesc:'У цій версії нотатки не надсилаються на сервер. Вони зберігаються у браузері.',renamed:'Нотатку перейменовано',movedTrash:'Нотатку переміщено в кошик',restored:'Нотатку відновлено',created:'Створено нову нотатку',copied:'Посилання скопійовано',backupDone:'Резервну копію експортовано',importDone:'Нотатку імпортовано',importBackupDone:'Резервну копію імпортовано',badImport:'Не вдалося імпортувати файл',themeChanged:'Тему застосовано',textSaved:'Збережено',languageChanged:'Мову інтерфейсу змінено',trashCleared:'Кошик очищено',confirmDelete:'Перемістити цю нотатку в кошик?',confirmEmptyTrash:'Назавжди видалити всі нотатки з кошика?',renamePrompt:'Нова назва:',linkPrompt:'URL посилання:',moveHint:'Перемістити через контекстне меню',categoryless:'Без папок',listStyle:'Список',normal:'Звичайний',heading1:'Заголовок 1',heading2:'Заголовок 2',heading3:'Заголовок 3',quote:'Цитата',code:'Код',aboutSubtitle:'Локальні нотатки для тексту без відволікань.',underline:'Підкреслення',strikethrough:'Закреслення',bullets:'Маркований список',numbered:'Нумерований список',checklist:'Список справ',alignLeft:'По лівому краю',alignCenter:'По центру',alignRight:'По правому краю',link:'Посилання',image:'Зображення',divider:'Роздільник',clearFormatting:'Очистити форматування',focusMode:'Режим письма',textColor:'Колір тексту',highlight:'Виділення',style:'Стиль тексту'}
+};
+// Fill less common languages from English while preserving full UI coverage.
+I18N.pl=Object.assign({},I18N.en,{tagline:'Pisz. Zapisuj. Twórz.',newNote:'＋ Nowa notatka',trash:'Kosz',settings:'Ustawienia',search:'Szukaj notatek…',noteTitle:'Tytuł notatki',editorPlaceholder:'Zacznij pisać…',saved:'Zapisano',saving:'Zapisywanie…',noNotes:'Brak notatek',emptyTrash:'Kosz jest pusty',justNow:'właśnie teraz',minutes:'min',hours:'godz.',days:'dni',words:'słów',characters:'znaków',notes:'notatki',general:'Ogólne',appearance:'Wygląd',data:'Dane',shortcuts:'Skróty klawiszowe',about:'O nas',language:'Język interfejsu',languageDesc:'Wykrywany na podstawie języka przeglądarki. Nazwa Notes Pro pozostaje bez zmian.',detected:'Wykryty język:',localStorageTitle:'Pamięć lokalna',localStorageDesc:'Notatki są zapisywane w tej przeglądarce niemal natychmiast.',autosave:'Automatyczny zapis',autosaveDesc:'Zapis uruchamia się około 160 ms po zmianie.',themesTitle:'Motywy',themesDesc:'Różne palety — od AMOLED i terminala po jasny papier.',animations:'Animacje interfejsu',animationsDesc:'Płynne przejścia, efekty hover i animowane tło.',importExport:'Import i eksport',dataDesc:'TXT, Markdown i pełna kopia JSON.',import:'Importuj',deleteAll:'Opróżnij kosz',deleteAllDesc:'Usuwa notatki znajdujące się w koszu.',clearTrash:'Wyczyść',undo:'Cofnij',redo:'Ponów',find:'Szukaj',save:'Zapisz',newNoteShort:'Nowa notatka',fullscreen:'Pełny ekran',bold:'Pogrubienie',italic:'Kursywa',developer:'Deweloper',support:'Wesprzyj rozwój',supportDesc:'Jeśli Notes Pro jest przydatny, możesz wesprzeć jego rozwój.',supportButton:'Wesprzyj Notes Pro',privacy:'Prywatność',privacyDesc:'Notatki pozostają lokalnie w pamięci przeglądarki.',renamed:'Notatka zmieniona',movedTrash:'Notatka przeniesiona do kosza',restored:'Notatka przywrócona',created:'Utworzono nową notatkę',backupDone:'Kopia wyeksportowana',importDone:'Notatka zaimportowana',importBackupDone:'Kopia zaimportowana',badImport:'Nie udało się zaimportować pliku',themeChanged:'Motyw zastosowany',textSaved:'Zapisano',languageChanged:'Zmieniono język',trashCleared:'Kosz wyczyszczony',confirmDelete:'Przenieść tę notatkę do kosza?',confirmEmptyTrash:'Usunąć wszystkie notatki z kosza?',renamePrompt:'Nowa nazwa:',linkPrompt:'Adres URL:',categoryless:'Bez folderów',normal:'Normalny',heading1:'Nagłówek 1',heading2:'Nagłówek 2',heading3:'Nagłówek 3',quote:'Cytat',code:'Kod',aboutSubtitle:'Lokalne notatki do pisania bez rozpraszaczy.',underline:'Podkreślenie',strikethrough:'Przekreślenie',bullets:'Lista punktowana',numbered:'Lista numerowana',checklist:'Lista zadań',alignLeft:'Wyrównaj do lewej',alignCenter:'Wyśrodkuj',alignRight:'Wyrównaj do prawej',link:'Link',image:'Obraz',divider:'Separator',clearFormatting:'Wyczyść formatowanie',focusMode:'Tryb skupienia',textColor:'Kolor tekstu',highlight:'Podświetlenie'});
+I18N.fr=Object.assign({},I18N.en,{tagline:'Écrivez. Enregistrez. Créez.',newNote:'＋ Nouvelle note',trash:'Corbeille',settings:'Paramètres',search:'Rechercher des notes…',noteTitle:'Titre de la note',editorPlaceholder:'Commencez à écrire…',saved:'Enregistré',saving:'Enregistrement…',noNotes:'Aucune note',emptyTrash:'La corbeille est vide',justNow:'à l’instant',minutes:'min',hours:'h',days:'j',words:'mots',characters:'caractères',notes:'notes',general:'Général',appearance:'Apparence',data:'Données',shortcuts:'Raccourcis',about:'À propos',language:'Langue de l’interface',languageDesc:'Détectée selon la langue du navigateur. Le nom Notes Pro reste inchangé.',detected:'Langue détectée :',localStorageTitle:'Stockage local',localStorageDesc:'Les notes sont enregistrées presque instantanément dans ce navigateur.',autosave:'Enregistrement automatique',autosaveDesc:'La sauvegarde démarre environ 160 ms après une modification.',themesTitle:'Thèmes',themesDesc:'Palettes variées, d’AMOLED au papier clair.',animations:'Animations',animationsDesc:'Transitions fluides, effets hover et arrière-plan animé.',importExport:'Importer et exporter',dataDesc:'TXT, Markdown et sauvegarde JSON complète.',import:'Importer',deleteAll:'Vider la corbeille',deleteAllDesc:'Supprime les notes déjà dans la corbeille.',clearTrash:'Vider',undo:'Annuler',redo:'Rétablir',find:'Rechercher',save:'Enregistrer',newNoteShort:'Nouvelle note',fullscreen:'Plein écran',bold:'Gras',italic:'Italique',developer:'Développeur',support:'Soutenir le développement',supportDesc:'Si Notes Pro vous est utile, vous pouvez soutenir son développement.',supportButton:'Soutenir Notes Pro',privacy:'Confidentialité',privacyDesc:'Les notes restent dans le stockage du navigateur.',renamed:'Note renommée',movedTrash:'Note déplacée vers la corbeille',restored:'Note restaurée',created:'Nouvelle note créée',backupDone:'Sauvegarde exportée',importDone:'Note importée',importBackupDone:'Sauvegarde importée',badImport:'Impossible d’importer le fichier',themeChanged:'Thème appliqué',textSaved:'Enregistré',languageChanged:'Langue modifiée',trashCleared:'Corbeille vidée',confirmDelete:'Déplacer cette note vers la corbeille ?',confirmEmptyTrash:'Supprimer toutes les notes de la corbeille ?',renamePrompt:'Nouveau nom :',linkPrompt:'URL du lien :',categoryless:'Sans dossiers',normal:'Normal',heading1:'Titre 1',heading2:'Titre 2',heading3:'Titre 3',quote:'Citation',code:'Code',aboutSubtitle:'Notes locales pour écrire sans distraction.',underline:'Souligné',strikethrough:'Barré',bullets:'Liste à puces',numbered:'Liste numérotée',checklist:'Liste de tâches',alignLeft:'Aligner à gauche',alignCenter:'Centrer',alignRight:'Aligner à droite',link:'Lien',image:'Image',divider:'Séparateur',clearFormatting:'Effacer la mise en forme',focusMode:'Mode écriture',textColor:'Couleur du texte',highlight:'Surlignage'});
+I18N.es=Object.assign({},I18N.en,{tagline:'Escribe. Guarda. Crea.',newNote:'＋ Nueva nota',trash:'Papelera',settings:'Ajustes',search:'Buscar notas…',noteTitle:'Título de la nota',editorPlaceholder:'Empieza a escribir…',saved:'Guardado',saving:'Guardando…',noNotes:'Aún no hay notas',emptyTrash:'La papelera está vacía',justNow:'ahora mismo',minutes:'min',hours:'h',days:'d',words:'palabras',characters:'caracteres',notes:'notas',general:'General',appearance:'Apariencia',data:'Datos',shortcuts:'Atajos',about:'Acerca de',language:'Idioma de la interfaz',languageDesc:'Se detecta según el idioma del navegador. El nombre Notes Pro no cambia.',detected:'Idioma detectado:',localStorageTitle:'Almacenamiento local',localStorageDesc:'Las notas se guardan casi al instante en este navegador.',autosave:'Guardado automático',autosaveDesc:'El guardado comienza unos 160 ms después de un cambio.',themesTitle:'Temas',themesDesc:'Paletas distintas, desde AMOLED y terminal hasta papel claro.',animations:'Animaciones',animationsDesc:'Transiciones suaves, efectos hover y fondo animado.',importExport:'Importar y exportar',dataDesc:'TXT, Markdown y copia JSON completa.',import:'Importar',deleteAll:'Vaciar la papelera',deleteAllDesc:'Elimina solo las notas que ya están en la papelera.',clearTrash:'Vaciar',undo:'Deshacer',redo:'Rehacer',find:'Buscar',save:'Guardar',newNoteShort:'Nueva nota',fullscreen:'Pantalla completa',bold:'Negrita',italic:'Cursiva',developer:'Desarrollador',support:'Apoyar el desarrollo',supportDesc:'Si Notes Pro te resulta útil, puedes apoyar su desarrollo.',supportButton:'Apoyar Notes Pro',privacy:'Privacidad',privacyDesc:'Las notas permanecen en el almacenamiento del navegador.',renamed:'Nota renombrada',movedTrash:'Nota enviada a la papelera',restored:'Nota restaurada',created:'Nueva nota creada',backupDone:'Copia exportada',importDone:'Nota importada',importBackupDone:'Copia importada',badImport:'No se pudo importar el archivo',themeChanged:'Tema aplicado',textSaved:'Guardado',languageChanged:'Idioma cambiado',trashCleared:'Papelera vaciada',confirmDelete:'¿Mover esta nota a la papelera?',confirmEmptyTrash:'¿Eliminar para siempre todas las notas de la papelera?',renamePrompt:'Nuevo nombre:',linkPrompt:'URL del enlace:',categoryless:'Sin carpetas',normal:'Normal',heading1:'Título 1',heading2:'Título 2',heading3:'Título 3',quote:'Cita',code:'Código',aboutSubtitle:'Notas locales para escribir sin distracciones.',underline:'Subrayado',strikethrough:'Tachado',bullets:'Lista con viñetas',numbered:'Lista numerada',checklist:'Lista de tareas',alignLeft:'Alinear a la izquierda',alignCenter:'Centrar',alignRight:'Alinear a la derecha',link:'Enlace',image:'Imagen',divider:'Separador',clearFormatting:'Limpiar formato',focusMode:'Modo concentración',textColor:'Color del texto',highlight:'Resaltado'});
+I18N.it=Object.assign({},I18N.en,{tagline:'Scrivi. Salva. Crea.',newNote:'＋ Nuova nota',trash:'Cestino',settings:'Impostazioni',search:'Cerca note…',noteTitle:'Titolo della nota',editorPlaceholder:'Inizia a scrivere…',saved:'Salvato',saving:'Salvataggio…',noNotes:'Nessuna nota',emptyTrash:'Il cestino è vuoto',justNow:'proprio ora',minutes:'min',hours:'h',days:'g',words:'parole',characters:'caratteri',notes:'note',general:'Generale',appearance:'Aspetto',data:'Dati',shortcuts:'Scorciatoie',about:'Informazioni',language:'Lingua dell’interfaccia',languageDesc:'Rilevata dalla lingua del browser. Il nome Notes Pro non cambia.',detected:'Lingua rilevata:',localStorageTitle:'Archiviazione locale',localStorageDesc:'Le note vengono salvate quasi istantaneamente nel browser.',autosave:'Salvataggio automatico',autosaveDesc:'Il salvataggio parte circa 160 ms dopo una modifica.',themesTitle:'Temi',themesDesc:'Palette diverse, da AMOLED e terminale alla carta chiara.',animations:'Animazioni',animationsDesc:'Transizioni fluide, effetti hover e sfondo animato.',importExport:'Importa ed esporta',dataDesc:'TXT, Markdown e backup JSON completo.',import:'Importa',deleteAll:'Svuota il cestino',deleteAllDesc:'Elimina solo le note già nel cestino.',clearTrash:'Svuota',undo:'Annulla',redo:'Ripeti',find:'Cerca',save:'Salva',newNoteShort:'Nuova nota',fullscreen:'Schermo intero',bold:'Grassetto',italic:'Corsivo',developer:'Sviluppatore',support:'Supporta lo sviluppo',supportDesc:'Se Notes Pro ti è utile, puoi supportarne lo sviluppo.',supportButton:'Supporta Notes Pro',privacy:'Privacy',privacyDesc:'Le note restano nel browser.',renamed:'Nota rinominata',movedTrash:'Nota spostata nel cestino',restored:'Nota ripristinata',created:'Nuova nota creata',backupDone:'Backup esportato',importDone:'Nota importata',importBackupDone:'Backup importato',badImport:'Impossibile importare il file',themeChanged:'Tema applicato',textSaved:'Salvato',languageChanged:'Lingua cambiata',trashCleared:'Cestino svuotato',confirmDelete:'Spostare questa nota nel cestino?',confirmEmptyTrash:'Eliminare tutte le note nel cestino?',renamePrompt:'Nuovo nome:',linkPrompt:'URL:',categoryless:'Senza cartelle',normal:'Normale',heading1:'Titolo 1',heading2:'Titolo 2',heading3:'Titolo 3',quote:'Citazione',code:'Codice',aboutSubtitle:'Note locali per scrivere senza distrazioni.',underline:'Sottolineato',strikethrough:'Barrato',bullets:'Elenco puntato',numbered:'Elenco numerato',checklist:'Elenco attività',alignLeft:'Allinea a sinistra',alignCenter:'Centra',alignRight:'Allinea a destra',link:'Link',image:'Immagine',divider:'Divisore',clearFormatting:'Cancella formattazione',focusMode:'Modalità scrittura',textColor:'Colore del testo',highlight:'Evidenziazione'});
+I18N.pt=Object.assign({},I18N.en,{tagline:'Escreva. Salve. Crie.',newNote:'＋ Nova nota',trash:'Lixeira',settings:'Configurações',search:'Pesquisar notas…',noteTitle:'Título da nota',editorPlaceholder:'Comece a escrever…',saved:'Salvo',saving:'Salvando…',noNotes:'Ainda não há notas',emptyTrash:'A lixeira está vazia',justNow:'agora',minutes:'min',hours:'h',days:'d',words:'palavras',characters:'caracteres',notes:'notas',general:'Geral',appearance:'Aparência',data:'Dados',shortcuts:'Atalhos',about:'Sobre',language:'Idioma da interface',languageDesc:'Detectado pelo idioma do navegador. O nome Notes Pro não muda.',detected:'Idioma detectado:',localStorageTitle:'Armazenamento local',localStorageDesc:'As notas são salvas quase instantaneamente neste navegador.',autosave:'Salvamento automático',autosaveDesc:'O salvamento começa cerca de 160 ms após uma alteração.',themesTitle:'Temas',themesDesc:'Paletas diferentes, de AMOLED e terminal a papel claro.',animations:'Animações',animationsDesc:'Transições suaves, efeitos hover e fundo animado.',importExport:'Importar e exportar',dataDesc:'TXT, Markdown e backup JSON completo.',import:'Importar',deleteAll:'Esvaziar lixeira',deleteAllDesc:'Exclui apenas notas que já estão na lixeira.',clearTrash:'Esvaziar',undo:'Desfazer',redo:'Refazer',find:'Pesquisar',save:'Salvar',newNoteShort:'Nova nota',fullscreen:'Tela cheia',bold:'Negrito',italic:'Itálico',developer:'Desenvolvedor',support:'Apoiar o desenvolvimento',supportDesc:'Se Notes Pro for útil, você pode apoiar seu desenvolvimento.',supportButton:'Apoiar o Notes Pro',privacy:'Privacidade',privacyDesc:'As notas ficam no armazenamento do navegador.',renamed:'Nota renomeada',movedTrash:'Nota movida para a lixeira',restored:'Nota restaurada',created:'Nova nota criada',backupDone:'Backup exportado',importDone:'Nota importada',importBackupDone:'Backup importado',badImport:'Não foi possível importar o arquivo',themeChanged:'Tema aplicado',textSaved:'Salvo',languageChanged:'Idioma alterado',trashCleared:'Lixeira esvaziada',confirmDelete:'Mover esta nota para a lixeira?',confirmEmptyTrash:'Excluir todas as notas da lixeira?',renamePrompt:'Novo nome:',linkPrompt:'URL do link:',categoryless:'Sem pastas',normal:'Normal',heading1:'Título 1',heading2:'Título 2',heading3:'Título 3',quote:'Citação',code:'Código',aboutSubtitle:'Notas locais para escrever sem distrações.',underline:'Sublinhado',strikethrough:'Riscado',bullets:'Lista com marcadores',numbered:'Lista numerada',checklist:'Lista de tarefas',alignLeft:'Alinhar à esquerda',alignCenter:'Centralizar',alignRight:'Alinhar à direita',link:'Link',image:'Imagem',divider:'Divisor',clearFormatting:'Limpar formatação',focusMode:'Modo de escrita',textColor:'Cor do texto',highlight:'Realce'});
+I18N.tr=Object.assign({},I18N.en,{tagline:'Yaz. Kaydet. Üret.',newNote:'＋ Yeni not',trash:'Çöp Kutusu',settings:'Ayarlar',search:'Notlarda ara…',noteTitle:'Not başlığı',editorPlaceholder:'Yazmaya başlayın…',saved:'Kaydedildi',saving:'Kaydediliyor…',noNotes:'Henüz not yok',emptyTrash:'Çöp kutusu boş',justNow:'şimdi',minutes:'dk',hours:'sa',days:'gün',words:'kelime',characters:'karakter',notes:'notlar',general:'Genel',appearance:'Görünüm',data:'Veriler',shortcuts:'Klavye kısayolları',about:'Hakkında',language:'Arayüz dili',languageDesc:'Tarayıcı diline göre algılanır. Notes Pro adı değişmez.',detected:'Algılanan dil:',localStorageTitle:'Yerel depolama',localStorageDesc:'Notlar bu tarayıcıda neredeyse anında kaydedilir.',autosave:'Otomatik kaydetme',autosaveDesc:'Değişiklikten yaklaşık 160 ms sonra kayıt başlar.',themesTitle:'Temalar',themesDesc:'AMOLED, terminal ve açık kağıt dahil farklı paletler.',animations:'Arayüz animasyonları',animationsDesc:'Yumuşak geçişler, hover efektleri ve animasyonlu arka plan.',importExport:'İçe / dışa aktar',dataDesc:'TXT, Markdown ve tam JSON yedeği.',import:'İçe aktar',deleteAll:'Çöp kutusunu boşalt',deleteAllDesc:'Yalnızca çöp kutusundaki notları siler.',clearTrash:'Temizle',undo:'Geri al',redo:'Yinele',find:'Ara',save:'Kaydet',newNoteShort:'Yeni not',fullscreen:'Tam ekran',bold:'Kalın',italic:'İtalik',developer:'Geliştirici',support:'Geliştirmeyi destekle',supportDesc:'Notes Pro yararlıysa geliştirmeyi destekleyebilirsiniz.',supportButton:'Notes Pro’yu destekle',privacy:'Gizlilik',privacyDesc:'Notlar tarayıcıda yerel olarak saklanır.',renamed:'Not yeniden adlandırıldı',movedTrash:'Not çöp kutusuna taşındı',restored:'Not geri yüklendi',created:'Yeni not oluşturuldu',backupDone:'Yedek dışa aktarıldı',importDone:'Not içe aktarıldı',importBackupDone:'Yedek içe aktarıldı',badImport:'Dosya içe aktarılamadı',themeChanged:'Tema uygulandı',textSaved:'Kaydedildi',languageChanged:'Arayüz dili değiştirildi',trashCleared:'Çöp kutusu temizlendi',confirmDelete:'Bu not çöp kutusuna taşınsın mı?',confirmEmptyTrash:'Çöp kutusundaki tüm notlar silinsin mi?',renamePrompt:'Yeni ad:',linkPrompt:'Bağlantı URL’si:',categoryless:'Klasör yok',normal:'Normal',heading1:'Başlık 1',heading2:'Başlık 2',heading3:'Başlık 3',quote:'Alıntı',code:'Kod',aboutSubtitle:'Dikkat dağıtmadan yazmak için yerel notlar.',underline:'Altı çizili',strikethrough:'Üstü çizili',bullets:'Madde işaretli liste',numbered:'Numaralı liste',checklist:'Yapılacaklar',alignLeft:'Sola hizala',alignCenter:'Ortala',alignRight:'Sağa hizala',link:'Bağlantı',image:'Görsel',divider:'Ayırıcı',clearFormatting:'Biçimlendirmeyi temizle',focusMode:'Yazma modu',textColor:'Metin rengi',highlight:'Vurgulama'});
+
+const THEMES={
+obsidian:{name:'Obsidian',sub:'Dark / warm',vars:{bg:'#0b0e13',panel:'#111720',panel2:'#171f2a',panel3:'#202a38',text:'#f4f7fb',muted:'#98a4b5',accent:'#ffb84d',accent2:'#ffd77f',danger:'#ff607d',success:'#4bd7a4'}},
+amethyst:{name:'Amethyst',sub:'Deep violet',vars:{bg:'#100c18',panel:'#171122',panel2:'#20172f',panel3:'#2d2140',text:'#f8f2ff',muted:'#ab9dbd',accent:'#ad7aff',accent2:'#d0a7ff',danger:'#ff6d98',success:'#57dbac'}},
+cyber:{name:'Cyber',sub:'Neon night',vars:{bg:'#080d12',panel:'#0d151e',panel2:'#13212b',panel3:'#1b2d39',text:'#ecfbff',muted:'#829aa8',accent:'#31e5ff',accent2:'#8d82ff',danger:'#ff4e9c',success:'#59ffb0'}},
+ocean:{name:'Ocean',sub:'Cool blue',vars:{bg:'#071219',panel:'#0d1c25',panel2:'#12303c',panel3:'#194655',text:'#e9fbff',muted:'#83aeb9',accent:'#37c7e8',accent2:'#86e8f7',danger:'#ff718b',success:'#45dbb2'}},
+forest:{name:'Forest',sub:'Natural green',vars:{bg:'#0a130e',panel:'#101d15',panel2:'#18291f',panel3:'#21392b',text:'#effaf2',muted:'#91aa9a',accent:'#5ed48b',accent2:'#a0ebb9',danger:'#ff7084',success:'#58dca6'}},
+sunset:{name:'Sunset',sub:'Warm orange',vars:{bg:'#1a0f0b',panel:'#251610',panel2:'#321f17',panel3:'#43271d',text:'#fff4ed',muted:'#b99a8d',accent:'#ff914d',accent2:'#ffc08c',danger:'#ff6876',success:'#54d3a3'}},
+rose:{name:'Rose',sub:'Pink noir',vars:{bg:'#190b12',panel:'#24121a',panel2:'#351924',panel3:'#47212f',text:'#fff1f6',muted:'#b99aa7',accent:'#ff5e9a',accent2:'#ff9fc6',danger:'#ff6b75',success:'#55d5a3'}},
+coffee:{name:'Coffee',sub:'Espresso',vars:{bg:'#120f0c',panel:'#1c1713',panel2:'#29211a',panel3:'#362a20',text:'#f9f0e5',muted:'#ab9989',accent:'#d69b5f',accent2:'#f4c38e',danger:'#f06f6f',success:'#73d2a2'}},
+nord:{name:'Nord',sub:'Arctic blue',vars:{bg:'#0d131a',panel:'#141c25',panel2:'#1d2833',panel3:'#263541',text:'#edf3f7',muted:'#95a9b7',accent:'#88c0d0',accent2:'#b3e1eb',danger:'#bf616a',success:'#8fbcbb'}},
+matcha:{name:'Matcha',sub:'Soft green',vars:{bg:'#0f140f',panel:'#171d15',panel2:'#20291d',panel3:'#2b3826',text:'#f3faed',muted:'#9ca991',accent:'#a7d66a',accent2:'#d0ed9c',danger:'#ed6e75',success:'#7bd59a'}},
+dracula:{name:'Dracula',sub:'Classic contrast',vars:{bg:'#171720',panel:'#201f2d',panel2:'#29283a',panel3:'#353449',text:'#f8f8f2',muted:'#a9a7bd',accent:'#bd93f9',accent2:'#ff79c6',danger:'#ff5555',success:'#50fa7b'}},
+terminal:{name:'Terminal',sub:'Retro green',vars:{bg:'#050706',panel:'#0a0e0b',panel2:'#101710',panel3:'#182319',text:'#d7ffd9',muted:'#72967a',accent:'#62ff82',accent2:'#a4ffb7',danger:'#ff6378',success:'#62ff82'}},
+amoled:{name:'AMOLED',sub:'Pure black',vars:{bg:'#000000',panel:'#050505',panel2:'#0b0b0b',panel3:'#121212',text:'#f6f6f6',muted:'#8d8d8d',accent:'#ffffff',accent2:'#cfcfcf',danger:'#ff596d',success:'#54d99d'}},
+mono:{name:'Mono',sub:'Minimal gray',vars:{bg:'#151515',panel:'#1c1c1c',panel2:'#272727',panel3:'#333333',text:'#eeeeee',muted:'#9a9a9a',accent:'#d6d6d6',accent2:'#ffffff',danger:'#ff6f7d',success:'#66d8a2'}},
+paper:{name:'Paper',sub:'Light / calm',vars:{bg:'#ece8e0',panel:'#f8f5ef',panel2:'#e5dfd5',panel3:'#d8d0c4',text:'#22272b',muted:'#70777b',accent:'#5c6bff',accent2:'#3c4ce5',danger:'#cf5265',success:'#258f6b'}},
+lavender:{name:'Lavender',sub:'Light purple',vars:{bg:'#f1edf7',panel:'#faf8fd',panel2:'#e4ddef',panel3:'#d7cce7',text:'#292333',muted:'#7b7186',accent:'#8566e8',accent2:'#6848cf',danger:'#cc566e',success:'#2f9b77'}},
+peach:{name:'Peach',sub:'Light warm',vars:{bg:'#f5eee9',panel:'#fff9f5',panel2:'#eadfd7',panel3:'#ddcec3',text:'#322721',muted:'#8c7c72',accent:'#e56b3f',accent2:'#c84d29',danger:'#c95364',success:'#2f9470'}},
+solarized:{name:'Solarized',sub:'Classic light',vars:{bg:'#fdf6e3',panel:'#eee8d5',panel2:'#e1dcc7',panel3:'#d5cfba',text:'#586e75',muted:'#839496',accent:'#b58900',accent2:'#cb4b16',danger:'#dc322f',success:'#2aa198'}}
+};
+
+const DEFAULT_NOTE={title:'Добро пожаловать в Notes Pro',html:'<h2>Добро пожаловать 👋</h2><p>Это локальный редактор для заметок и сценариев.</p><p><strong>Ctrl+Z</strong>, автосохранение, поиск, темы, форматирование и полноэкранный режим уже работают.</p><p>Попробуйте выделить текст — появится быстрая панель форматирования.</p>',pinned:true,deleted:false};
+const $=id=>document.getElementById(id);
+const uid=prefix=>`${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
+
+let state=load();
+let currentId=state.currentId||null;
+let saveTimer=null;let contextId=null;let selectionRange=null;
+let animationEnabled=state.animations!==false;
+function safeState(){
+  if(!state.notes)state.notes=[];
+  state.notes=state.notes.map(n=>({id:n.id||uid('note'),title:n.title||'Без названия',html:n.html||'',pinned:!!n.pinned,deleted:!!n.deleted,createdAt:n.createdAt||Date.now(),updatedAt:n.updatedAt||Date.now()}));
+}
+function parseStored(raw){
+  try{
+    const x=JSON.parse(raw);
+    if(x && Array.isArray(x.notes)) return x;
+  }catch(e){}
+  return null;
+}
+function recoverIndividualNotes(){
+  const notes=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i)||'';
+      if(!key.startsWith('notes-pro-note-')) continue;
+      const n=parseStored(localStorage.getItem(key)||'');
+      if(n && n.id) notes.push(n);
+    }
+  }catch(e){}
+  return notes;
+}
+function load(){
+  const candidates=[];
+  try{
+    for(const key of [STORAGE_KEY,'notes-pro-v3','notes-pro-v2','notes-pro-v1']){
+      const raw=localStorage.getItem(key);
+      const x=parseStored(raw||'');
+      if(x) candidates.push(x);
+    }
+  }catch(e){}
+  // Prefer the store with the greatest amount of actual note content.
+  if(candidates.length){
+    candidates.sort((a,b)=>{
+      const score=x=>(x.notes||[]).reduce((sum,n)=>sum+(String(n.html||'').length>0?String(n.html||'').length:0),0);
+      return score(b)-score(a);
+    });
+    const best=Object.assign({notes:[],currentId:null,theme:'obsidian',language:'auto',animations:true},candidates[0]);
+    return best;
+  }
+  const individual=recoverIndividualNotes();
+  if(individual.length){
+    const first=individual.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))[0];
+    return {notes:individual,currentId:first.id,theme:'obsidian',language:'auto',animations:true};
+  }
+  const note={id:uid('note'),...DEFAULT_NOTE,createdAt:Date.now(),updatedAt:Date.now()};
+  return {notes:[note],currentId:note.id,theme:'obsidian',language:'auto',animations:true};
+}
+const DB_NAME='NotesProDB', DB_STORE='kv', DB_VERSION=1;
+let dbPromise=null;
+
+function openDB(){
+  if(dbPromise)return dbPromise;
+  dbPromise=new Promise(resolve=>{
+    try{
+      if(!('indexedDB' in window)){resolve(null);return;}
+      const req=indexedDB.open(DB_NAME,DB_VERSION);
+      req.onupgradeneeded=()=>{try{req.result.createObjectStore(DB_STORE);}catch(e){}};
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>resolve(null);
+    }catch(e){resolve(null);}
+  });
+  return dbPromise;
+}
+function idbPut(value){
+  return openDB().then(db=>new Promise(resolve=>{
+    if(!db){resolve(false);return;}
+    try{
+      const tx=db.transaction(DB_STORE,'readwrite');
+      tx.objectStore(DB_STORE).put(value,STORAGE_KEY);
+      tx.oncomplete=()=>resolve(true);
+      tx.onerror=()=>resolve(false);
+      tx.onabort=()=>resolve(false);
+    }catch(e){resolve(false);}
+  }));
+}
+function idbGet(){
+  return openDB().then(db=>new Promise(resolve=>{
+    if(!db){resolve(null);return;}
+    try{
+      const tx=db.transaction(DB_STORE,'readonly');
+      const req=tx.objectStore(DB_STORE).get(STORAGE_KEY);
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>resolve(null);
+    }catch(e){resolve(null);}
+  }));
+}
+function saveIndividualNotes(){
+  let ok=false;
+  try{
+    for(const n of state.notes||[]){
+      if(!n?.id)continue;
+      const payload=JSON.stringify(n);
+      localStorage.setItem('notes-pro-note-'+n.id,payload);
+    }
+    ok=true;
+  }catch(e){}
+  return ok;
+}
+function saveNow(){
+  const payload=JSON.stringify(state);
+  let localOk=false;
+  try{
+    localStorage.setItem(STORAGE_KEY,payload);
+    localOk=localStorage.getItem(STORAGE_KEY)===payload;
+  }catch(e){}
+  const individualOk=saveIndividualNotes();
+  idbPut(payload).then(dbOk=>{
+    if(localOk||individualOk||dbOk){
+      setSave('saved');
+      $('storageStatus').textContent=localOk?'localStorage + резерв':(dbOk?'IndexedDB + резерв':'резервные заметки');
+    }else{
+      setSave('error');
+      $('storageStatus').textContent='Недоступно';
+    }
+  });
+}
+function queueSave(){
+  setSave('saving');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveNow,120);
+}
+function setSave(type){const e=$('saveState');const t=I18N[getLang()][type==='saved'?'saved':type==='saving'?'saving':'saveError'];e.textContent=t;e.className='save-state'+(type==='saving'?' saving':'')+(type==='error'?' error':'');}
+function detectLanguage(){
+  const langs=[...(navigator.languages||[]),navigator.language||'en'];
+  for(const raw of langs){const code=String(raw).toLowerCase().split('-')[0];if(LANGS.includes(code))return code;}
+  return 'en';
+}
+function getLang(){return state.language&&state.language!=='auto'?state.language:detectLanguage();}
+function languageLabel(code){const map={ru:'Русский',en:'English',de:'Deutsch',uk:'Українська',pl:'Polski',fr:'Français',es:'Español',it:'Italiano',pt:'Português',tr:'Türkçe'};return map[code]||code;}
+function t(key){return (I18N[getLang()]&&I18N[getLang()][key])||I18N.en[key]||key;}
+function localize(){
+  const lang=getLang();document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(I18N[lang]?.[key])el.textContent=I18N[lang][key];else if(I18N.en[key])el.textContent=I18N.en[key];});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const key=el.dataset.i18nPlaceholder;el.placeholder=(I18N[lang]?.[key]||I18N.en[key]||el.placeholder);});
+  $('editor').dataset.placeholder=t('editorPlaceholder');
+  const tip={pinBtn:t('about'),undoBtn:t('undo'),redoBtn:t('redo'),fullscreenBtn:t('fullscreen'),moreBtn:'⋯',newNoteBtn:t('newNoteShort'),searchInput:t('find'),settingsBtn:t('settings'),trashBtn:t('trash')};Object.entries(tip).forEach(([id,v])=>$(id)?.setAttribute('title',v));
+  const tipKeys={bold:'bold',italic:'italic',underline:'underline',strikethrough:'strikethrough',bullets:'bullets',numbered:'numbered',checklist:'checklist',alignLeft:'alignLeft',alignCenter:'alignCenter',alignRight:'alignRight',link:'link',image:'image',divider:'divider',clearFormatting:'clearFormatting',focusMode:'focusMode',textColor:'textColor',highlight:'highlight'};document.querySelectorAll('[data-tip]').forEach(el=>{const key=el.dataset.tip;if(tipKeys[key])el.title=t(tipKeys[key]);});$('blockFormat').title=t('style');
+  $('detectedLanguage').textContent=`${languageLabel(lang)} (${lang})`;
+  $('languageSelect').value=state.language||'auto';setSave('saved');renderList();renderCurrent();
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function stripHtml(html){const d=document.createElement('div');d.innerHTML=html||'';return d.textContent||'';}
+function countWords(text){const x=text.trim();return x?x.split(/\s+/u).length:0;}
+function fmtAgo(ts){const diff=Math.max(0,Date.now()-ts);const m=Math.floor(diff/60000);if(m<1)return t('justNow');if(m<60)return `${m} ${t('minutes')}`;const h=Math.floor(m/60);if(h<24)return `${h} ${t('hours')}`;return `${Math.floor(h/24)} ${t('days')}`;}
+function activeNotes(){return state.notes.filter(n=>!n.deleted).sort((a,b)=>Number(b.pinned)-Number(a.pinned)||b.updatedAt-a.updatedAt);}
+function filteredNotes(){const q=$('searchInput').value.trim().toLowerCase();let a=activeNotes();if(q)a=a.filter(n=>(n.title+' '+stripHtml(n.html)).toLowerCase().includes(q));return a;}
+function renderList(){
+  const wrap=$('noteList');const arr=filteredNotes();wrap.innerHTML='';
+  const head=document.createElement('div');head.className='list-heading';head.innerHTML=`<span>${t('notes')}</span><span>${arr.length}</span>`;wrap.appendChild(head);
+  if(!arr.length){wrap.insertAdjacentHTML('beforeend',`<div class="empty-list"><div class="empty-icon">✦</div>${t('noNotes')}</div>`);return;}
+  arr.forEach(n=>{const b=document.createElement('button');b.className='note-item'+(n.id===currentId?' active':'');b.innerHTML=`<div><div class="note-title"></div><div class="note-meta"><span class="pin">${n.pinned?'★':''}</span><span>${fmtAgo(n.updatedAt)} · ${countWords(stripHtml(n.html))} ${t('words')}</span></div></div><span style="color:var(--muted)">›</span>`;b.querySelector('.note-title').textContent=n.title||'Без названия';b.onclick=()=>selectNote(n.id);b.oncontextmenu=e=>{e.preventDefault();openContext(e.clientX,e.clientY,n.id)};wrap.appendChild(b);});
+}
+function current(){return state.notes.find(n=>n.id===currentId&&!n.deleted)||null;}
+function ensureCurrent(){let n=current();if(!n){n=activeNotes()[0];if(n){currentId=n.id;state.currentId=currentId;}else createNote(false);}renderCurrent();}
+function selectNote(id){if(!state.notes.some(n=>n.id===id&&!n.deleted))return;currentId=id;state.currentId=id;renderCurrent();renderList();$('sidebar').classList.remove('open');queueSave();}
+function createNote(showToast=true){const n={id:uid('note'),title:'Новая заметка',html:'',pinned:false,deleted:false,createdAt:Date.now(),updatedAt:Date.now()};state.notes.push(n);currentId=n.id;state.currentId=currentId;renderCurrent();renderList();$('titleInput').focus();saveNow();if(showToast)toast(t('created'));}
+function renderCurrent(){const n=current();if(!n)return;$('titleInput').value=n.title;$('editor').innerHTML=n.html||'';$('noteName').textContent=n.title||'Без названия';$('pinBtn').textContent=n.pinned?'★':'☆';$('pinBtn').classList.toggle('active',!!n.pinned);updateMeta();}
+function capture(){const n=current();if(!n)return;const title=$('titleInput').value.trim()||'Без названия';const html=$('editor').innerHTML;const text=$('editor').textContent||'';n.title=title;n.html=html|| (text ? '<p>'+escapeHtml(text)+'</p>' : '');n.updatedAt=Date.now();state.currentId=n.id;currentId=n.id;$('noteName').textContent=n.title;updateMeta();renderList();
+  // Keep the current note durable even before the debounced global save finishes.
+  try{localStorage.setItem('notes-pro-note-'+n.id,JSON.stringify(n));}catch(e){}
+  queueSave();
+}
+function updateMeta(){const n=current();if(!n)return;const text=stripHtml(n.html);$('wordCount').textContent=`${countWords(text)} ${t('words')}`;$('charCount').textContent=`${text.length} ${t('characters')}`;$('updatedTime').textContent=fmtAgo(n.updatedAt);$('noteName').textContent=n.title;}
+function togglePin(){const n=current();if(!n)return;n.pinned=!n.pinned;n.updatedAt=Date.now();$('pinBtn').textContent=n.pinned?'★':'☆';$('pinBtn').classList.toggle('active',n.pinned);renderList();queueSave();}
+function renameNote(id){const n=state.notes.find(x=>x.id===id);if(!n)return;const v=prompt(t('renamePrompt'),n.title);if(v===null)return;n.title=v.trim()||'Без названия';n.updatedAt=Date.now();if(id===currentId)$('titleInput').value=n.title;renderCurrent();renderList();queueSave();toast(t('renamed'));}
+function trashNote(id){const n=state.notes.find(x=>x.id===id);if(!n)return;if(id===currentId && !confirm(t('confirmDelete')))return;n.deleted=true;n.updatedAt=Date.now();const next=activeNotes()[0];if(next){currentId=next.id;state.currentId=currentId;renderCurrent()}else{currentId=null;state.currentId=null;$('noteName').textContent='Notes Pro';$('titleInput').value='';$('editor').innerHTML='';updateMeta();}renderList();queueSave();toast(t('movedTrash'));}
+function restore(id){const n=state.notes.find(x=>x.id===id);if(!n)return;n.deleted=false;n.updatedAt=Date.now();if(!currentId){currentId=n.id;state.currentId=n.id;}queueSave();renderList();renderCurrent();toast(t('restored'));}
+function purgeTrash(){if(!confirm(t('confirmEmptyTrash')))return;state.notes=state.notes.filter(n=>!n.deleted);if(!current())ensureCurrent();queueSave();renderList();toast(t('trashCleared'));}
+function openTrash(){
+  const trash=state.notes.filter(n=>n.deleted);
+  const body=trash.length?`<div class="trash-list">${trash.map(n=>`<div class="trash-item"><div><div class="trash-title">${escapeHtml(n.title)}</div><div class="setting-desc">${fmtAgo(n.updatedAt)}</div></div><div class="trash-actions"><button class="secondary-btn" data-restore="${n.id}">${t('restored')}</button></div></div>`).join('')}</div><div style="margin-top:12px"><button class="secondary-btn danger-btn" id="modalEmptyTrash">${t('clearTrash')}</button></div>`:`<div class="empty-list">${t('emptyTrash')}</div>`;
+  openModal(t('trash'),body);document.querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>{restore(b.dataset.restore);closeModal();});const e=$('modalEmptyTrash');if(e)e.onclick=()=>{purgeTrash();closeModal();};
+}
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),1900);}
+function openContext(x,y,id){contextId=id;const m=$('contextMenu');m.style.left=Math.min(x,innerWidth-205)+'px';m.style.top=Math.min(y,innerHeight-245)+'px';m.classList.add('open');}
+function closeContext(){contextId=null;$('contextMenu').classList.remove('open');}
+function safeFile(s){return String(s||'note').replace(/[\\/:*?"<>|]/g,'_').trim()||'note';}
+function download(name,data,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),700);}
+function htmlToMarkdown(html){const root=document.createElement('div');root.innerHTML=html;const conv=node=>{if(node.nodeType===3)return node.nodeValue;if(node.nodeType!==1)return '';const inner=[...node.childNodes].map(conv).join('');const tag=node.tagName.toLowerCase();if(tag==='br')return '\n';if(tag==='strong'||tag==='b')return `**${inner}**`;if(tag==='em'||tag==='i')return `*${inner}*`;if(tag==='s'||tag==='strike')return `~~${inner}~~`;if(tag==='a')return `[${inner}](${node.getAttribute('href')||''})`;if(/^h[1-6]$/.test(tag))return '#'.repeat(+tag[1])+' '+inner+'\n\n';if(tag==='blockquote')return '> '+inner+'\n\n';if(tag==='li')return '- '+inner+'\n';if(tag==='ul'||tag==='ol')return inner+'\n';if(tag==='pre')return '```\n'+inner+'\n```\n\n';if(tag==='p'||tag==='div')return inner+'\n\n';return inner;};return conv(root).replace(/\n{3,}/g,'\n\n').trim()+'\n';}
+function exportText(format){const n=current();if(!n)return;const data=format==='md'?htmlToMarkdown(n.html):stripHtml(n.html);download(safeFile(n.title)+'.'+format,data,'text/plain;charset=utf-8');}
+function exportBackup(){saveNow();download('notes-pro-backup.json',JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2),'application/json;charset=utf-8');toast(t('backupDone'));}
+function markdownToHtml(s){return s.split(/\n{2,}/).map(block=>{if(/^#{1,6}\s+/.test(block)){const m=block.match(/^(#{1,6})\s+(.*)$/);return `<h${m[1].length}>${escapeHtml(m[2])}</h${m[1].length}>`;}if(/^>\s?/.test(block))return `<blockquote>${escapeHtml(block.replace(/^>\s?/,'')).replace(/\n/g,'<br>')}</blockquote>`;if(/^[-*]\s+/.test(block))return '<ul>'+block.split('\n').map(x=>`<li>${escapeHtml(x.replace(/^[-*]\s+/,''))}</li>`).join('')+'</ul>';return `<p>${escapeHtml(block).replace(/\n/g,'<br>')}</p>`;}).join('');}
+function importFile(file){const r=new FileReader();r.onload=()=>{try{if(file.name.toLowerCase().endsWith('.json')){const x=JSON.parse(r.result);if(!Array.isArray(x.notes))throw Error('bad');state.notes=x.notes;state.theme=x.theme||state.theme;state.language=x.language||state.language;state.animations=x.animations!==false;safeState();currentId=state.currentId||activeNotes()[0]?.id||null;state.currentId=currentId;applyTheme(state.theme,false);localize();ensureCurrent();saveNow();toast(t('importBackupDone'));}else{const isMd=/\.(md|markdown)$/i.test(file.name);const n={id:uid('note'),title:file.name.replace(/\.(md|markdown|txt)$/i,''),html:isMd?markdownToHtml(String(r.result)):`<p>${escapeHtml(String(r.result)).replace(/\n/g,'<br>')}</p>`,pinned:false,deleted:false,createdAt:Date.now(),updatedAt:Date.now()};state.notes.push(n);currentId=n.id;state.currentId=n.id;renderCurrent();renderList();saveNow();toast(t('importDone'));}}catch(e){toast(t('badImport'));}};r.readAsText(file);}
+function setFavicon(theme){
+  const f=document.querySelector('link[rel="icon"]');
+  if(!f)return;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${theme.vars.accent2}"/><stop offset="1" stop-color="${theme.vars.accent}"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="16" fill="url(#g)"/><path d="M18 20h28M18 30h20M18 40h14" stroke="${theme.vars.bg}" stroke-width="4" stroke-linecap="round"/></svg>`;
+  f.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function applyTheme(id,notify=true){const theme=THEMES[id]||THEMES.obsidian;state.theme=id;for(const [k,v] of Object.entries(theme.vars))document.documentElement.style.setProperty('--'+k,v);const hex=theme.vars.accent.replace('#','');const rgb=hex.length===6?parseInt(hex.slice(0,2),16)+','+parseInt(hex.slice(2,4),16)+','+parseInt(hex.slice(4,6),16):'255,184,77';document.documentElement.style.setProperty('--accent-rgb',rgb);setFavicon(theme);renderThemeGrid();if(notify)toast(t('themeChanged'));queueSave();}
+function renderThemeGrid(){const wrap=$('themeGrid');if(!wrap)return;wrap.innerHTML='';for(const [id,th] of Object.entries(THEMES)){const b=document.createElement('button');b.className='theme-card'+(state.theme===id?' active':'');b.innerHTML=`<div class="swatches"><span style="background:${th.vars.bg}"></span><span style="background:${th.vars.panel2}"></span><span style="background:${th.vars.accent}"></span><span style="background:${th.vars.accent2}"></span></div><div class="theme-name">${th.name}</div><div class="theme-meta">${th.sub}</div>`;b.onclick=()=>applyTheme(id);wrap.appendChild(b);}}
+function setAnimations(on){animationEnabled=!!on;state.animations=animationEnabled;document.documentElement.style.setProperty('--anim-scale',animationEnabled?'1':'0');document.body.classList.toggle('no-anim',!animationEnabled);$('animationToggle').textContent=animationEnabled?'ON':'OFF';queueSave();}
+function format(cmd,val=null){$('editor').focus();document.execCommand(cmd,false,val);capture();updateToolbar();}
+function setBlock(tag){$('editor').focus();document.execCommand('formatBlock',false,tag);capture();}
+function insertLink(){const url=prompt(t('linkPrompt'),'https://');if(!url)return;format('createLink',url);}
+function insertImage(){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=()=>{const file=input.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{const img=document.createElement('img');img.src=r.result;img.className='editor-image';const sel=window.getSelection();if(sel&&sel.rangeCount){const range=sel.getRangeAt(0);range.deleteContents();range.insertNode(img);range.collapse(false);}else $('editor').appendChild(img);capture();};r.readAsDataURL(file);};input.click();}
+function checklist(){const html='<div class="task-row"><input class="task-box" type="checkbox"><span class="task-text">Задача</span></div>';const sel=window.getSelection();$('editor').focus();if(sel&&sel.rangeCount)document.execCommand('insertHTML',false,html);else $('editor').insertAdjacentHTML('beforeend',html);capture();}
+function updateToolbar(){document.querySelectorAll('[data-cmd]').forEach(b=>{const c=b.dataset.cmd;if(['bold','italic','underline','strikeThrough','insertUnorderedList','insertOrderedList','justifyLeft','justifyCenter','justifyRight'].includes(c))b.classList.toggle('active',!!document.queryCommandState(c));});}
+function clearFormat(){format('removeFormat');format('unlink');}
+function showFloating(){const s=window.getSelection();if(!s||s.isCollapsed||!$('editor').contains(s.anchorNode)){$('floatingToolbar').classList.remove('open');return}selectionRange=s.getRangeAt(0).cloneRange();const r=s.getRangeAt(0).getBoundingClientRect();const f=$('floatingToolbar');f.style.left=Math.max(8,Math.min(innerWidth-230,r.left+r.width/2-110))+'px';f.style.top=Math.max(8,r.top-48)+'px';f.classList.add('open');updateToolbar();}
+function closeFloating(){setTimeout(()=>{$('floatingToolbar').classList.remove('open')},80)}
+function toggleFullscreen(){document.body.classList.toggle('fullscreen');document.body.classList.toggle('focus-writing');}
+function openSettings(){ $('settingsModal').classList.add('open');renderThemeGrid(); }
+function closeModal(){$('settingsModal').classList.remove('open');$('settingsModal').querySelector('.modal')?.scrollTo?.(0,0);}
+function openModal(title,body){const modal=$('settingsModal').querySelector('.modal');modal.innerHTML=`<div class="modal-head"><h2>${escapeHtml(title)}</h2><button class="icon-btn" id="simpleClose">×</button></div><div class="modal-body">${body}</div>`;$('settingsModal').classList.add('open');$('simpleClose').onclick=()=>{closeModal();location.reload();};}
+
+// Toolbar events
+$('titleInput').addEventListener('input',capture);$('titleInput').addEventListener('blur',capture);$('editor').addEventListener('input',capture);$('editor').addEventListener('beforeinput',()=>queueMicrotask(capture));$('editor').addEventListener('paste',()=>setTimeout(capture,0));$('editor').addEventListener('cut',()=>setTimeout(capture,0));$('editor').addEventListener('compositionend',capture);$('editor').addEventListener('keyup',e=>{updateToolbar();if(!e.ctrlKey&&!e.metaKey)queueSave();});$('editor').addEventListener('blur',capture);$('editor').addEventListener('mouseup',showFloating);$('editor').addEventListener('focus',updateToolbar);$('editor').addEventListener('click',e=>{if(e.target.classList.contains('task-box')){capture();}});
+document.querySelectorAll('.toolbar [data-cmd]').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault());b.onclick=()=>format(b.dataset.cmd);});
+document.querySelectorAll('.floating-toolbar [data-cmd]').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault());b.onclick=()=>{if(selectionRange){const s=window.getSelection();s.removeAllRanges();s.addRange(selectionRange);}format(b.dataset.cmd);closeFloating();};});
+$('blockFormat').onchange=e=>setBlock(e.target.value);$('checklistBtn').onclick=checklist;$('linkBtn').onclick=insertLink;$('imageBtn').onclick=insertImage;$('hrBtn').onclick=()=>format('insertHorizontalRule');$('clearFormatBtn').onclick=clearFormat;$('focusModeBtn').onclick=toggleFullscreen;$('textColor').oninput=e=>{ $('textColorDot').style.background=e.target.value;format('foreColor',e.target.value);};$('highlightColor').oninput=e=>{ $('highlightDot').style.background=e.target.value;format('hiliteColor',e.target.value);};
+$('floatHighlight').onclick=()=>{if(selectionRange){const s=window.getSelection();s.removeAllRanges();s.addRange(selectionRange);}format('hiliteColor',$('highlightColor').value);closeFloating();};$('floatLink').onclick=()=>{if(selectionRange){const s=window.getSelection();s.removeAllRanges();s.addRange(selectionRange);}insertLink();closeFloating();};
+// top actions
+$('newNoteBtn').onclick=()=>createNote();$('pinBtn').onclick=togglePin;$('undoBtn').onclick=()=>format('undo');$('redoBtn').onclick=()=>format('redo');$('fullscreenBtn').onclick=toggleFullscreen;
+$('moreBtn').onclick=e=>{e.stopPropagation();if(!currentId)return;const r=$('moreBtn').getBoundingClientRect();openContext(Math.max(8,r.right-195),Math.min(innerHeight-240,r.bottom+8),currentId);};
+$('mobileMenuBtn').onclick=()=>$('sidebar').classList.toggle('open');$('searchInput').oninput=renderList;
+$('settingsBtn').onclick=openSettings;$('closeSettings').onclick=closeModal;$('settingsModal').onclick=e=>{if(e.target.id==='settingsModal')closeModal()};$('trashBtn').onclick=openTrash;
+$('ctxRename').onclick=()=>{renameNote(contextId);closeContext()};$('ctxPin').onclick=()=>{const n=state.notes.find(x=>x.id===contextId);if(n){n.pinned=!n.pinned;n.updatedAt=Date.now();queueSave();renderList();}closeContext()};$('ctxExportTxt').onclick=()=>{const old=currentId;currentId=contextId;exportText('txt');currentId=old;closeContext()};$('ctxExportMd').onclick=()=>{const old=currentId;currentId=contextId;exportText('md');currentId=old;closeContext()};$('ctxDelete').onclick=()=>{trashNote(contextId);closeContext()};
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#contextMenu')&&!e.target.closest('.note-item')&&!e.target.closest('#moreBtn'))closeContext();
+});
+// Settings navigation
+$('settingsNav').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('settingsNav').querySelectorAll('button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.settings-page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('page-'+b.dataset.page).classList.add('active');});
+$('languageSelect').onchange=e=>{state.language=e.target.value;queueSave();localize();toast(t('languageChanged'));};$('animationToggle').onclick=()=>setAnimations(!animationEnabled);
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=e=>{if(e.target.files?.[0])importFile(e.target.files[0]);e.target.value='';};$('backupBtn').onclick=exportBackup;$('exportCurrentTxt').onclick=()=>exportText('txt');$('exportCurrentMd').onclick=()=>exportText('md');$('emptyTrashBtn').onclick=purgeTrash;
+// shortcuts + autosave
+window.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(mod&&e.key.toLowerCase()==='k'){e.preventDefault();$('searchInput').focus();$('searchInput').select();}else if(mod&&e.key.toLowerCase()==='n'){e.preventDefault();createNote();}else if(mod&&e.key.toLowerCase()==='s'){e.preventDefault();capture();saveNow();toast(t('textSaved'));}else if((e.key==='F11')||(mod&&e.shiftKey&&e.key.toLowerCase()==='f')){e.preventDefault();toggleFullscreen();}else if(mod&&e.key.toLowerCase()==='z'&&e.shiftKey){e.preventDefault();format('redo');} });
+window.addEventListener('resize',()=>{if(selectionRange)showFloating();});window.addEventListener('scroll',showFloating,true);document.addEventListener('selectionchange',()=>{if(document.activeElement===$('editor'))showFloating();});window.addEventListener('blur',()=>{clearTimeout(saveTimer);saveNow();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){clearTimeout(saveTimer);saveNow();}});
+window.addEventListener('beforeunload',()=>{clearTimeout(saveTimer);saveNow();});
+window.addEventListener('storage',e=>{
+  if(e.key!==STORAGE_KEY||!e.newValue||e.newValue===JSON.stringify(state))return;
+  try{
+    const incoming=JSON.parse(e.newValue);
+    if(incoming?.notes?.length){
+      state=incoming;currentId=state.currentId||activeNotes()[0]?.id||null;
+      safeState();ensureCurrent();renderList();
+      toast('Обновлено из другой вкладки');
+    }
+  }catch(_){}
+});
+
+// Initialisation
+safeState();
+applyTheme(state.theme,false);
+setAnimations(animationEnabled);
+localize();
+ensureCurrent();
+renderThemeGrid();
+
+// If localStorage is unavailable/empty, restore the latest backup from IndexedDB.
+(async()=>{
+  try{
+    const localRaw=localStorage.getItem(STORAGE_KEY) || localStorage.getItem('notes-pro-v1');
+    if(!localRaw){
+      const idbRaw=await idbGet();
+      if(idbRaw){
+        const restored=JSON.parse(idbRaw);
+        if(restored && Array.isArray(restored.notes)){
+          state=Object.assign({notes:[],currentId:null,theme:'obsidian',language:'auto',animations:true},restored);
+          safeState();
+          currentId=state.currentId||activeNotes()[0]?.id||null;
+          state.currentId=currentId;
+          applyTheme(state.theme,false);
+          setAnimations(state.animations!==false);
+          localize();
+          ensureCurrent();
+          renderList();
+          toast('Восстановлено из локального резервного хранения');
+        }
+      }
+    }
+    try{
+      const testKey='__notes_pro_test__';
+      localStorage.setItem(testKey,'1');localStorage.removeItem(testKey);
+      $('storageStatus').textContent='localStorage + резерв';
+    }catch(e){
+      $('storageStatus').textContent='IndexedDB';
+    }
+  }catch(e){
+    $('storageStatus').textContent='Только текущий сеанс';
+  }
+})();
+})();
+</script>
+</body>
+</html>
