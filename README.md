@@ -29,7 +29,7 @@ Notes Pro — локальное приложение для заметок, с�
 
 ### 🚀 Использование
 
-Откройте `index.html` в браузере.
+Откройте `https://null1x.github.io/Notes-Pro/` в браузере.
 
 Также Notes Pro можно разместить на **GitHub Pages** и использовать как веб-приложение.
 
@@ -71,7 +71,7 @@ Notes Pro — локальное приложение для заметок, с�
 
 ### 🚀 Usage
 
-Open `index.html` in your browser.
+Open `https://null1x.github.io/Notes-Pro/` in your browser.
 
 You can also host Notes Pro using **GitHub Pages** and use it as a web application.
 
