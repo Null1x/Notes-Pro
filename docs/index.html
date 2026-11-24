@@ -147,6 +147,37 @@ html[data-m=newyear] #sb{top:26px}
 .top{position:relative}.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--acr),.6),transparent)}
 .tp{position:fixed;z-index:70;padding:10px;border-radius:16px;background:var(--p);border:1px solid var(--bd);box-shadow:0 18px 50px rgba(0,0,0,.45);display:grid;grid-template-columns:repeat(4,44px);gap:8px;animation:pop .16s}
 .td{width:44px;height:44px;border-radius:50%;border:2px solid transparent;transition:transform .15s}.td:hover{transform:scale(1.12)}.td.on{border-color:var(--tx)}
+
+/* --- v3.1: полировка, праздничные темы, О нас --- */
+.cta{background:linear-gradient(135deg,var(--ac2),var(--ac))}
+.it.on::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:3px;background:var(--ac)}.it{position:relative}
+.it:active{transform:scale(.985)}
+.mc{width:min(860px,100%);height:min(640px,calc(100dvh - 24px))}
+.mn{width:160px}.mn button{position:relative}.mn button.on::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--ac)}
+.tg{grid-template-columns:repeat(auto-fill,minmax(124px,1fr))}.sw{height:60px;font-size:26px}
+.tc:hover{transform:translateY(-3px)}.tc small{display:block}
+.mp h3{text-transform:uppercase;letter-spacing:.08em;font-size:11.5px}
+.tp{grid-template-columns:repeat(5,40px);gap:9px}.td{width:40px;height:40px}
+.tb button:active,.ib:active,.cta:active{transform:scale(.94)}
+#ed blockquote{box-shadow:inset 0 0 0 1px rgba(var(--acr),.12)}
+.ab{display:grid;gap:12px}.abh{display:flex;gap:18px;align-items:center;padding:20px;border-radius:18px;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(var(--acr),.16),var(--p2))}
+.abh .lgbig{margin:0;width:78px;height:78px;flex:0 0 auto}.abk{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+.abh h2{font-size:20px;letter-spacing:-.02em;margin:4px 0}.abh small,.ab .row small{color:var(--mu);font-size:12.5px;line-height:1.55}
+.abg{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}.abg .row{margin:0;align-items:flex-start}.abc small{max-width:none;margin:4px 0 0}
+.abv{font-size:24px;font-weight:850;color:var(--ac2);margin:4px 0;letter-spacing:-.02em}
+.sup{background:linear-gradient(135deg,rgba(var(--acr),.14),var(--p2))}
+.abl{display:inline-flex;align-items:center;height:40px;padding:0 16px;margin-top:12px;border-radius:11px;background:var(--ac);color:var(--on);font-weight:800;text-decoration:none;transition:transform .15s,filter .15s}
+.abl:hover{filter:brightness(1.08);transform:translateY(-1px)}.abl.ghost{background:var(--p);color:var(--tx);border:1px solid var(--bd)}
+.abf{text-align:center;color:var(--mu);font-size:11px;letter-spacing:.05em}
+@media(max-width:800px){.abg{grid-template-columns:1fr}.abh{padding:16px}.tp{grid-template-columns:repeat(5,40px)}}
+html[data-t=valentine] body{background:radial-gradient(ellipse at 85% 0,#4d0f2c,transparent 55%),radial-gradient(ellipse at 5% 100%,#35091f,transparent 50%),var(--bg)}
+html[data-t=christmas] body{background:radial-gradient(ellipse at 90% 0,#4a0f12,transparent 50%),radial-gradient(ellipse at 5% 100%,#0e3a25,transparent 55%),var(--bg)}
+html[data-t=chinese] body{background:radial-gradient(ellipse at 50% 0,#5a0c0c,transparent 55%),var(--bg)}
+html[data-t=march8] body{background:radial-gradient(ellipse at 90% 0,#ffd6e8,transparent 50%),var(--bg)}
+html[data-t=easter] body{background:radial-gradient(ellipse at 10% 0,#fff0a8,transparent 45%),radial-gradient(ellipse at 95% 100%,#cdeec6,transparent 50%),var(--bg)}
+html[data-t=valentine] .brand h1,html[data-t=chinese] .brand h1,html[data-t=christmas] .brand h1{color:var(--ac2)}
+html[data-t=valentine] .logo::after,html[data-t=march8] .logo::after,html[data-t=easter] .logo::after,html[data-t=christmas] .logo::after,html[data-t=chinese] .logo::after{position:absolute;right:-7px;top:-8px;font-size:15px;line-height:1}
+html[data-t=valentine] .logo::after{content:"💘"}html[data-t=march8] .logo::after{content:"🌷"}html[data-t=easter] .logo::after{content:"🐣"}html[data-t=christmas] .logo::after{content:"⭐"}html[data-t=chinese] .logo::after{content:"🏮"}
 </style>
 </head>
 <body>
@@ -202,7 +233,13 @@ cyber:['Cyber','#07090f','#0d1119','#151c2a','#e8fbff','#7f93a8','#31e5ff','#ff4
 amoled:['AMOLED','#000000','#080808','#111111','#f4f4f4','#8d8d8d','#8ab4ff','#c4d7ff','🌑','stars'],
 paper:['Paper','#efebe3','#faf7f1','#e6e0d5','#22272b','#6f777c','#4f5dff','#3341e0','📄','motes',1],
 halloween:['Хэллоуин','#0b0610','#150c1c','#21132b','#f6eefc','#a591b8','#ff7a1a','#ffb066','🎃','halloween'],
-newyear:['Новый год','#050c1e','#0b1731','#12234a','#f2f7ff','#8fa6cf','#ffd166','#ff7d8f','🎄','newyear']};
+newyear:['Новый год','#050c1e','#0b1731','#12234a','#f2f7ff','#8fa6cf','#ffd166','#ff7d8f','🎄','newyear'],
+valentine:['14 февраля','#180810','#240d1a','#351427','#fff0f5','#c39aac','#ff4d85','#ffa0c0','💖','hearts'],
+march8:['8 Марта','#f8eef2','#fff9fb','#f1dde5','#3a2230','#8d6e7e','#e0589a','#b5367a','🌷','petals',1],
+easter:['Пасха','#f6f1de','#fffcee','#ece4c6','#33301f','#7f7a5c','#d98a1f','#3f9a5a','🐣','motes',1],
+christmas:['Рождество','#07140f','#0d2119','#143127','#f4fff7','#8fb09d','#ff5252','#ffd978','⭐','stars'],
+chinese:['Лунный Новый год','#1a0707','#280d0d','#3a1313','#fff4e6','#c29a8a','#ff3b30','#ffc83d','🏮','motes']};
+const FEST=new Set(['halloween','newyear','valentine','march8','easter','christmas','chinese']);
 const FF={sans:'Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif',serif:'Georgia,"Times New Roman",serif',mono:'ui-monospace,Menlo,Consolas,monospace'};
 const uid=()=>Date.now().toString(36)+R().toString(36).slice(2,7);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -313,13 +350,19 @@ $('fb').onclick=()=>document.body.classList.toggle('focus');$('mb').onclick=()=>
 let pg='look';
 function settings(){sync();const seg=(k,o)=>`<div class="seg" data-k="${k}">${o.map(([v,l])=>`<button data-v="${v}"${String(S[k])==v?' class="on"':''}>${l}</button>`).join('')}</div>`;
  let b=0;for(let i=0;i<L.length;i++){const k=L.key(i);if(k&&k.startsWith(PX+'n:'))b+=k.length+L.getItem(k).length}
- const pages={look:`<h3>Тема</h3><div class="tg">${Object.entries(TH).map(([k,t])=>`<button class="tc${k==S.theme?' on':''}" data-th="${k}"><div class="sw" style="background:linear-gradient(135deg,${t[1]} 0 40%,${t[6]} 40% 70%,${t[7]} 70%)">${t[8]}</div><b>${t[0]}</b></button>`).join('')}</div>
+ const tgrid=f=>Object.entries(TH).filter(([k])=>FEST.has(k)==!!f).map(([k,t])=>`<button class="tc${k==S.theme?' on':''}" data-th="${k}"><div class="sw" style="background:linear-gradient(135deg,${t[1]} 0 40%,${t[6]} 40% 70%,${t[7]} 70%)">${t[8]}</div><b>${t[0]}</b></button>`).join('');
+ const pages={look:`<h3>Классические</h3><div class="tg">${tgrid(0)}</div><h3>Праздничные 🎉</h3><div class="tg">${tgrid(1)}</div>
 <h3>Эффекты</h3><div class="row"><div><b>Анимации</b><small>«Лёгкие» — меньше частиц и 30 кадров/с, для слабых устройств и батареи.</small></div>${seg('fx',[[0,'Выкл'],[1,'Лёгкие'],[2,'Полные']])}</div>
-<div class="row"><div><b>Праздничная тема сама</b><small>Хэллоуин с 15 октября по 2 ноября, Новый год с 1 декабря по 10 января. Применяется при запуске.</small></div><button class="sw2${S.auto?' on':''}" data-auto aria-label="Авто-тема"></button></div>`,
+<div class="row"><div><b>Праздничная тема сама</b><small>Хэллоуин (15 окт — 2 ноя), 14 февраля (10–15 фев), 8 Марта (4–9 мар), Новый год (1 дек — 10 янв). Применяется при запуске.</small></div><button class="sw2${S.auto?' on':''}" data-auto aria-label="Авто-тема"></button></div>`,
  ed:`<h3>Текст</h3><div class="row"><b>Размер</b>${seg('size',[[15,'Мелкий'],[17,'Обычный'],[19,'Крупный'],[22,'Огромный']])}</div><div class="row"><b>Шрифт</b>${seg('font',[['sans','Sans'],['serif','Serif'],['mono','Mono']])}</div><div class="row"><b>Ширина</b>${seg('width',[[680,'Узкая'],[860,'Обычная'],[1100,'Широкая']])}</div><div class="pv">Съешь ещё этих мягких французских булок, да выпей чаю. Так будет выглядеть твой текст.</div>`,
  data:`<h3>Резервная копия</h3><div class="btns"><button data-e="json">Скачать бэкап JSON</button><button data-e="imp">Импорт (JSON, TXT, MD)</button></div><h3>Текущая заметка</h3><div class="btns"><button data-e="txt">Скачать TXT</button><button data-e="md">Скачать Markdown</button></div><p class="hint">Заметок: ${S.notes.filter(n=>!n.deleted).length}, в корзине: ${S.notes.filter(n=>n.deleted).length}. Занимают около ${Math.max(1,b*2/1024|0)} КБ. Всё хранится только в этом браузере, делай бэкап. В корзине заметки лежат 30 дней.</p>`,
+ about:`<div class="ab"><div class="abh"><svg class="lgbig" viewBox="0 0 64 64"><use href="#lg"/></svg><div><div class="abk">Notes Pro</div><h2>Простые заметки. Никаких отвлечений.</h2><small>Быстрый локальный редактор для текста, заметок и сценариев.</small></div></div>
+<div class="abg"><div class="row abc"><div><b>Разработчик</b><div class="abv">Nullix</div><small>Автор и владелец проекта. Делаю Notes Pro быстрым, красивым и без лишнего.</small><a class="abl ghost" href="https://github.com/null1x/Notes-Pro" target="_blank" rel="noopener">GitHub</a></div></div>
+<div class="row abc sup"><div><b>Поддержать разработку</b><small>Если Notes Pro пригодился — можно кинуть копеечку автору. Это очень мотивирует делать новые темы и функции ❤</small><a class="abl" href="https://www.donationalerts.com/r/nullix" target="_blank" rel="noopener">Поддержать на DonationAlerts</a></div></div></div>
+<div class="row"><div><b>🔒 Приватность</b><small>Заметки не отправляются на сервер. Они лежат только в хранилище вашего браузера — делайте бэкап во вкладке «Данные».</small></div></div>
+<p class="abf">Notes Pro · Local-first · Nullix</p></div>`,
  keys:`<table class="kt">${[['Поиск','Ctrl K'],['Новая заметка','Ctrl Alt N'],['Сохранить сейчас','Ctrl S'],['Режим фокуса','Ctrl Shift F'],['Следующая тема','Alt T'],['Выйти из фокуса / закрыть','Esc'],['Удалить выбранную в списке','Delete'],['Жирный / курсив','Ctrl B / Ctrl I'],['Отменить / повторить','Ctrl Z / Ctrl Y'],['Открыть ссылку в тексте','Ctrl + клик']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>`};
- const nav=[['look','Внешний вид'],['ed','Редактор'],['data','Данные'],['keys','Клавиши']];
+ const nav=[['look','Внешний вид'],['ed','Редактор'],['data','Данные'],['keys','Клавиши'],['about','О нас']];
  $('md').innerHTML=`<div class="mc"><div class="mh"><h2>Настройки</h2><button class="ib" data-x>${ic('x')}</button></div><div class="mbody"><nav class="mn">${nav.map(([k,l])=>`<button data-p="${k}"${k==pg?' class="on"':''}>${l}</button>`).join('')}</nav><div class="mp" id="mp">${pages[pg]}</div></div></div>`;
  $('md')._pages=pages;$('md').classList.add('on')}
 $('md').onclick=e=>{const m=$('md'),t=e.target;if(t==m||t.closest('[data-x]'))return m.classList.remove('on');
@@ -335,7 +378,7 @@ function theme(id){const t=TH[id]||TH.obsidian,r=document.documentElement,v=['bg
  v.forEach((k,i)=>r.style.setProperty('--'+k,t[i+1]));AC=rg(t[6]);A2=rg(t[7]);r.style.setProperty('--acr',AC);r.style.setProperty('--a2r',A2);r.style.setProperty('--on',lum(t[6])>.55?'#14110a':'#fff');
  const ev=t[9]=='halloween'||t[9]=='newyear';r.dataset.m=ev?t[9]:'';r.dataset.t=S.theme;r.style.colorScheme=t[10]?'light':'dark';document.querySelector('meta[name=theme-color]').content=t[1];fav(t);
  const d=new Date(),days=Math.ceil((new Date(d.getFullYear()+1,0,1)-d)/864e5);
- $('sub').textContent=t[9]=='newyear'?(d.getMonth()==0&&d.getDate()<=10?'С Новым годом! 🎉':'До Нового года: '+days+' дн.'):t[9]=='halloween'?'Сладость или гадость? 🎃':'Пишите. Сохраняйте. Создавайте.';
+ $('sub').textContent=t[9]=='newyear'?(d.getMonth()==0&&d.getDate()<=10?'С Новым годом! 🎉':'До Нового года: '+days+' дн.'):t[9]=='halloween'?'Сладость или гадость? 🎃':({valentine:'С Днём всех влюблённых 💖',march8:'С 8 Марта! 🌷',easter:'Светлой Пасхи 🐣',christmas:'С Рождеством ⭐',chinese:'С Лунным Новым годом 🏮'})[S.theme]||'Пишите. Сохраняйте. Создавайте.';
  mode=t[9]||'';garland();fxApply();msave()}
 function setTheme(id){if(id==S.theme)return;const f=()=>theme(id);if(S.fx&&document.startViewTransition)document.startViewTransition(f);else f()}
 // ---- эффекты: один canvas, спрайты вместо градиентов, пауза в фоне; туман и луна — на CSS (GPU)
@@ -351,7 +394,9 @@ const fly=()=>({x:R()*W,y:R()*H,p:R()*6.28,sx:.4+R()*.8,sy:.3+R()*.7,r:3+R()*3})
 const petal=i=>({x:R()*W,y:i?R()*H:-14,r:5+R()*5,v:.4+R()*.7,p:R()*6.28,rot:R()*6.28,vr:(R()-.5)*.04,a:.5+R()*.4});
 const mote=i=>({x:R()*W,y:i?R()*H:H+6,r:2+R()*3.5,v:.12+R()*.3,p:R()*6.28,a:.2+R()*.4});
 const strk=i=>({x:R()*W,y:i?R()*H:-140,l:50+R()*120,v:3+R()*5,a:.25+R()*.5});
-const GEN={newyear:flake,halloween:ember,stars:star,bubbles:bub,fireflies:fly,petals:petal,motes:mote,streaks:strk},NUM={newyear:130,halloween:40,stars:90,bubbles:28,fireflies:34,petals:24,motes:46,streaks:30};
+const heart=i=>({x:R()*W,y:i?R()*H:H+20,r:6+R()*9,v:.3+R()*.6,p:R()*6.28,a:.25+R()*.5});
+function heartSp(c){const k='h'+c;if(SP[k])return SP[k];const e=document.createElement('canvas');e.width=e.height=32;const g=e.getContext('2d');g.fillStyle=`rgb(${c})`;g.beginPath();g.moveTo(16,28);g.bezierCurveTo(2,18,3,5,12,5);g.bezierCurveTo(15,5,16,8,16,9);g.bezierCurveTo(16,8,17,5,20,5);g.bezierCurveTo(29,5,30,18,16,28);g.fill();return SP[k]=e}
+const GEN={hearts:heart,newyear:flake,halloween:ember,stars:star,bubbles:bub,fireflies:fly,petals:petal,motes:mote,streaks:strk},NUM={hearts:26,newyear:130,halloween:40,stars:90,bubbles:28,fireflies:34,petals:24,motes:46,streaks:30};
 function ring(c){const k='r'+c;if(SP[k])return SP[k];const e=document.createElement('canvas');e.width=e.height=32;const g=e.getContext('2d');g.strokeStyle=`rgba(${c},.85)`;g.lineWidth=2;g.fillStyle=`rgba(${c},.12)`;g.beginPath();g.arc(16,16,13,0,6.28);g.fill();g.stroke();g.fillStyle='rgba(255,255,255,.7)';g.beginPath();g.arc(11,11,2.2,0,6.28);g.fill();return SP[k]=e}
 function streak(c){const k='s'+c;if(SP[k])return SP[k];const e=document.createElement('canvas');e.width=2;e.height=64;const g=e.getContext('2d'),r=g.createLinearGradient(0,0,0,64);r.addColorStop(0,`rgba(${c},0)`);r.addColorStop(1,`rgba(${c},1)`);g.fillStyle=r;g.fillRect(0,0,2,64);return SP[k]=e}
 function size(){const D=Math.min(devicePixelRatio||1,1.25),k=S.fx==1?.45:1;W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);P=[];B=[];F=[];const g=GEN[mode],n=g?Math.round(Math.min(1.4,W*H/9e5)*NUM[mode]*k):0;for(let i=0;i<n;i++)P.push(g(1));
@@ -370,6 +415,7 @@ function frame(ts){raf=requestAnimationFrame(frame);const gap=ts-last;if(S.fx==1
   for(let i=F.length-1;i>=0;i--){const q=F[i];q.x+=q.vx*k;q.y+=q.vy*k;q.l-=dt*1.1;if(q.l<=0){F.splice(i,1);continue}for(let j=0;j<8;j++){cx.globalAlpha=q.l*(1-j/8)*.9;cx.drawImage(sp(AC),q.x-q.vx*j*.9-6,q.y-q.vy*j*.9-6,12,12)}}cx.globalAlpha=1}
  else if(mode=='bubbles'){const s=ring(AC);for(const q of P){q.y-=q.v*k;q.x+=Math.sin(ts/1300+q.p)*.35*k;if(q.y<-20)Object.assign(q,bub(0));cx.globalAlpha=q.a;cx.drawImage(s,q.x-q.r,q.y-q.r,q.r*2,q.r*2)}cx.globalAlpha=1}
  else if(mode=='fireflies'){const s=sp('215,255,120');for(const q of P){q.x+=Math.sin(ts/1300*q.sx+q.p)*.7*k;q.y+=Math.cos(ts/1700*q.sy+q.p)*.5*k;if(q.x<-10)q.x=W+10;if(q.x>W+10)q.x=-10;if(q.y<-10)q.y=H+10;if(q.y>H+10)q.y=-10;cx.globalAlpha=Math.pow(.5+.5*Math.sin(ts/650+q.p),2)*.9+.08;const z=q.r*2.4;cx.drawImage(s,q.x-z,q.y-z,z*2,z*2)}cx.globalAlpha=1}
+ else if(mode=='hearts'){const s=heartSp(AC);for(const q of P){q.y-=q.v*k;q.x+=Math.sin(ts/1300+q.p)*.5*k;if(q.y<-24)Object.assign(q,heart(0));cx.globalAlpha=q.a;cx.drawImage(s,q.x-q.r,q.y-q.r,q.r*2,q.r*2)}cx.globalAlpha=1}
  else if(mode=='petals'){cx.fillStyle=`rgb(${AC})`;for(const q of P){q.y+=q.v*k;q.x+=Math.sin(ts/1400+q.p)*.8*k;q.rot+=q.vr*k;if(q.y>H+14)Object.assign(q,petal(0));cx.globalAlpha=q.a;cx.save();cx.translate(q.x,q.y);cx.rotate(q.rot);cx.scale(1,.35+.65*Math.abs(Math.sin(ts/700+q.p)));cx.beginPath();cx.ellipse(0,0,q.r,q.r*.55,0,0,6.28);cx.fill();cx.restore()}cx.globalAlpha=1}
  else if(mode=='motes'){const s=sp(AC);for(const q of P){q.y-=q.v*k;q.x+=Math.sin(ts/2000+q.p)*.25*k;if(q.y<-8)Object.assign(q,mote(0));cx.globalAlpha=q.a*(.6+.4*Math.sin(ts/900+q.p));const z=q.r*2.2;cx.drawImage(s,q.x-z,q.y-z,z*2,z*2)}cx.globalAlpha=1}
  else if(mode=='streaks'){const s=streak(AC);for(const q of P){q.y+=q.v*k;if(q.y>H)Object.assign(q,strk(0));cx.globalAlpha=q.a;cx.drawImage(s,q.x,q.y,2,q.l)}cx.globalAlpha=1}}
@@ -397,7 +443,7 @@ $('tp').onclick=e=>{const b=e.target.closest('[data-th]');if(b){setTheme(b.datas
 document.addEventListener('click',e=>{if(!e.target.closest('#tp'))$('tp').hidden=true});
 addEventListener('keydown',e=>{if(e.key=='Escape')$('tp').hidden=true});
 // ---- старт
-function autoTheme(){const d=new Date(),m=d.getMonth()+1,x=d.getDate();if((m==10&&x>=15)||(m==11&&x<=2))return'halloween';if(m==12||(m==1&&x<=10))return'newyear'}
+function autoTheme(){const d=new Date(),m=d.getMonth()+1,x=d.getDate();if((m==10&&x>=15)||(m==11&&x<=2))return'halloween';if(m==12||(m==1&&x<=10))return'newyear';if(m==2&&x>=10&&x<=15)return'valentine';if(m==3&&x>=4&&x<=9)return'march8'}
 injectLogo();$('thb').innerHTML=ic('pal');$('isr').innerHTML=ic('srch');$('inew').innerHTML=ic('plus');$('iset').innerHTML=ic('set');$('mb').innerHTML=ic('menu');$('nb3').innerHTML=ic('plus');$('pb').innerHTML=ic('star');$('fb').innerHTML=ic('foc');$('db').innerHTML=ic('tr');
 if(S.auto&&autoTheme())S.theme=autoTheme();
 if(!get(S.cur)||get(S.cur).deleted)S.cur=(S.notes.filter(n=>!n.deleted).sort(cmp)[0]||{}).id||null;
